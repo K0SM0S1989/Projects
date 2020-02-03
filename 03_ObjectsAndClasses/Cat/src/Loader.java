@@ -46,5 +46,11 @@ public class Loader
                 break;
             }
         }
+        System.out.println("_______________");
+        roy.feed(150.0);
+        roy.pee();
+        roy.pee();
+        roy.pee();
+        System.out.println("Съедено = "+roy.getFeedAmount()+" грамм корма");
     }
 }

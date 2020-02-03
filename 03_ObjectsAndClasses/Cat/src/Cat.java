@@ -7,6 +7,12 @@ public class Cat
     private double minWeight;
     private double maxWeight;
 
+    public double getFeedAmount() {
+        return feedAmount;
+    }
+
+    private double feedAmount=0;
+
     public Cat()
     {
         weight = 1500.0 + 3000.0 * Math.random();
@@ -24,12 +30,19 @@ public class Cat
 
     public void feed(Double amount)
     {
+        feedAmount = feedAmount+amount;
         weight = weight + amount;
     }
 
     public void drink(Double amount)
     {
         weight = weight + amount;
+    }
+    public void pee(){
+          {weight = weight - 150;
+            System.out.println("Pee pee ka ka");
+        }
+
     }
 
     public Double getWeight()
