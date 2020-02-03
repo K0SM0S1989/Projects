@@ -11,7 +11,15 @@ public class Cat
     private static final int NUMBER_OF_EYES = 2;
     private static final double MINIMUM_WEIGHT = 1000.0;
     private static final double MAXIMUM_WEIGHT = 9000.0;
+    private CatColor catColor;
 
+    public void setCatColor(CatColor catColor) {
+        this.catColor = catColor;
+    }
+
+    public CatColor getCatColor() {
+        return catColor;
+    }
 
     public boolean isLiveStatus(){
         if (getWeight()<maxWeight && getWeight()>minWeight){
