@@ -8,6 +8,9 @@ public class Cat
     private double maxWeight;
     private double feedAmount=0;
     private boolean liveStatus;
+    private static final int NUMBER_OF_EYES = 2;
+    private static final double MINIMUM_WEIGHT = 1000.0;
+    private static final double MAXIMUM_WEIGHT = 9000.0;
 
 
     public boolean isLiveStatus(){
