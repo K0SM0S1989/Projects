@@ -12,6 +12,15 @@ public class Cat
     private static final double MINIMUM_WEIGHT = 1000.0;
     private static final double MAXIMUM_WEIGHT = 9000.0;
     private CatColor catColor;
+    private String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public void setCatColor(CatColor catColor) {
         this.catColor = catColor;
@@ -110,5 +119,17 @@ public class Cat
         else {
             return "Playing";
         }
+    }
+    /**
+     * метод для копирования
+     * @param weight
+     * @param catColor
+     * @param name
+     */
+    public void copyCat(double weight, CatColor catColor, String name){
+        this.weight = weight;
+        setName(name);
+        setCatColor(catColor);
+
     }
 }

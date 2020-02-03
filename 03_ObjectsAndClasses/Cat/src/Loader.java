@@ -59,6 +59,13 @@ public class Loader
         System.out.println("Съедено = "+roy.getFeedAmount()+" грамм корма");
         System.out.println("Всего кошек = "+Cat.getCount());
 
+        barsik.setName("Барсик");
+        barsik.setCatColor(CatColor.RED_COLOR);
+        murka.copyCat(barsik.getWeight(), barsik.getCatColor(),barsik.getName() );
+
+        System.out.println(murka.getName()+" "+murka.getWeight()+" "+murka.getCatColor());
+        System.out.println(barsik.getName()+" "+barsik.getWeight()+" "+barsik.getCatColor());
+
     }
     private static Cat getKitten(){
         Cat kittenPushok = new Cat(1100.0);
