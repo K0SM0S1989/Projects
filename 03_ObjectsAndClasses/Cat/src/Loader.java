@@ -4,6 +4,7 @@ public class Loader
     static int countLoader;
     public static void main(String[] args)
     {
+        getKitten();
         Cat murka = new Cat();
         Cat sonya = new Cat();
         Cat barsik = new Cat();
@@ -58,5 +59,9 @@ public class Loader
         System.out.println("Съедено = "+roy.getFeedAmount()+" грамм корма");
         System.out.println("Всего кошек = "+Cat.getCount());
 
+    }
+    private static Cat getKitten(){
+        Cat kittenPushok = new Cat(1100.0);
+        return kittenPushok;
     }
 }

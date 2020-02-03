@@ -40,6 +40,16 @@ public class Cat
         maxWeight = 9000.0;
 
     }
+    public Cat(double weight)
+    {
+
+        count++;
+        this.weight = weight;
+        originWeight = weight;
+        minWeight = 1000.0;
+        maxWeight = 9000.0;
+
+    }
 
     public void meow()
     {
