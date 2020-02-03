@@ -20,12 +20,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Cat.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Cat.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Cat.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="58" column="37" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
+            <state relative-caret-position="-1749">
+              <caret line="16" column="38" selection-start-line="16" selection-start-column="38" selection-end-line="16" selection-end-column="38" />
               <folding>
+                <element signature="e#495#496#0" expanded="true" />
+                <element signature="e#454#455#0" expanded="true" />
+                <element signature="e#481#482#0" expanded="true" />
+                <element signature="e#448#449#0" expanded="true" />
+                <element signature="e#488#489#0" expanded="true" />
+                <element signature="e#435#436#0" expanded="true" />
+                <element signature="e#466#467#0" expanded="true" />
                 <element signature="e#176#177#0" expanded="true" />
                 <element signature="e#209#210#0" expanded="true" />
                 <element signature="e#314#315#0" expanded="true" />
@@ -39,11 +46,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Loader.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Loader.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Loader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="58" column="60" selection-start-line="58" selection-start-column="60" selection-end-line="58" selection-end-column="60" />
+            <state relative-caret-position="338">
+              <caret line="66" column="93" selection-start-line="66" selection-start-column="93" selection-end-line="66" selection-end-column="93" />
             </state>
           </provider>
         </entry>
@@ -54,6 +61,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -61,8 +69,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/Loader.java" />
+        <option value="$PROJECT_DIR$/src/CatColor.java" />
         <option value="$PROJECT_DIR$/src/Cat.java" />
+        <option value="$PROJECT_DIR$/src/Loader.java" />
       </list>
     </option>
   </component>
@@ -101,7 +110,7 @@
     <property name="FullScreen" value="false" />
     <property name="dynamic.classpath" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.0" />
     <property name="recentsLimit" value="5" />
@@ -251,7 +260,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -261,9 +269,9 @@
       <window_info anchor="right" id="Capture Analysis" order="3" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="right" id="Maven Projects" order="5" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32784185" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32784185" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3294893" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.3294893" />
       <window_info id="Capture Tool" order="2" />
       <window_info anchor="right" id="Designer" order="4" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24508321" />
@@ -312,6 +320,13 @@
         <state relative-caret-position="119">
           <caret line="7" column="18" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
           <folding>
+            <element signature="e#495#496#0" expanded="true" />
+            <element signature="e#454#455#0" expanded="true" />
+            <element signature="e#481#482#0" expanded="true" />
+            <element signature="e#448#449#0" expanded="true" />
+            <element signature="e#488#489#0" expanded="true" />
+            <element signature="e#435#436#0" expanded="true" />
+            <element signature="e#466#467#0" expanded="true" />
             <element signature="e#176#177#0" expanded="true" />
             <element signature="e#209#210#0" expanded="true" />
             <element signature="e#314#315#0" expanded="true" />
@@ -332,18 +347,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Loader.java">
+    <entry file="file://$PROJECT_DIR$/src/CatColor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="58" column="60" selection-start-line="58" selection-start-column="60" selection-end-line="58" selection-end-column="60" />
+        <state relative-caret-position="85">
+          <caret line="5" column="18" selection-start-line="5" selection-start-column="18" selection-end-line="5" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Cat.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="58" column="37" selection-start-line="58" selection-start-column="37" selection-end-line="58" selection-end-column="37" />
+        <state relative-caret-position="-1749">
+          <caret line="16" column="38" selection-start-line="16" selection-start-column="38" selection-end-line="16" selection-end-column="38" />
           <folding>
+            <element signature="e#495#496#0" expanded="true" />
+            <element signature="e#454#455#0" expanded="true" />
+            <element signature="e#481#482#0" expanded="true" />
+            <element signature="e#448#449#0" expanded="true" />
+            <element signature="e#488#489#0" expanded="true" />
+            <element signature="e#435#436#0" expanded="true" />
+            <element signature="e#466#467#0" expanded="true" />
             <element signature="e#176#177#0" expanded="true" />
             <element signature="e#209#210#0" expanded="true" />
             <element signature="e#314#315#0" expanded="true" />
@@ -356,16 +378,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Loader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="338">
+          <caret line="66" column="93" selection-start-line="66" selection-start-column="93" selection-end-line="66" selection-end-column="93" />
+        </state>
+      </provider>
+    </entry>
   </component>
   <component name="masterDetails">
     <states>
       <state key="ArtifactsStructureConfigurable.UI">
         <settings>
           <artifact-editor />
+          <last-edited>Cat:jar</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.5" />
               </list>
             </option>
           </splitter-proportions>
