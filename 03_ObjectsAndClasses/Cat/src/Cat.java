@@ -6,15 +6,31 @@ public class Cat
 
     private double minWeight;
     private double maxWeight;
+    private double feedAmount=0;
+    private boolean liveStatus;
+
+
+    public boolean isLiveStatus(){
+        if (getWeight()<maxWeight && getWeight()>minWeight){
+            liveStatus = true;
+        }else liveStatus = false;
+        return liveStatus;
+    }
+    private static int count = 0;
 
     public double getFeedAmount() {
         return feedAmount;
     }
-
-    private double feedAmount=0;
+    public static int getCount() {
+        return count;
+    }
+    public static void setCount(int count) {
+        Cat.count = count;
+    }
 
     public Cat()
     {
+        count++;
         weight = 1500.0 + 3000.0 * Math.random();
         originWeight = weight;
         minWeight = 1000.0;
@@ -30,16 +46,25 @@ public class Cat
 
     public void feed(Double amount)
     {
-        feedAmount = feedAmount+amount;
+        if (!isLiveStatus()){
+            System.out.println(" нельзя покормить, так как кошка мертва");
+
+        } else
+            feedAmount = feedAmount+amount;
         weight = weight + amount;
     }
 
     public void drink(Double amount)
     {
-        weight = weight + amount;
+        if (!isLiveStatus()){
+            System.out.println(" нельзя напоить, так как кошка мертва");
+
+        } else
+            weight = weight + amount;
     }
     public void pee(){
-          {weight = weight - 150;
+        if (!isLiveStatus()){System.out.println(" нельзя отправить в туалет, так как кошка мертва");
+        } else {weight = weight - 150;
             System.out.println("Pee pee ka ka");
         }
 

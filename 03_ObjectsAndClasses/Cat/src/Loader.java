@@ -1,6 +1,7 @@
 
 public class Loader
 {
+    static int countLoader;
     public static void main(String[] args)
     {
         Cat murka = new Cat();
@@ -9,6 +10,7 @@ public class Loader
         Cat ryzhik = new Cat();
         Cat roy = new Cat();
         Cat kosoy = new Cat();
+        countLoader = Cat.getCount();
 
         String [] weightCats = {"Вес Мурки = ", "Вес Cони = ","Вес Барсика = ","Вес Рыжика = ","Вес Роя = ","Вес Косого = "};
         String [] catsNames = {"Мурка = ", "Cоня = ","Барсик = ","Рыжик = ","Рой = ","Косой = "};
@@ -27,6 +29,7 @@ public class Loader
         for (int i =0; i<=10;i++){
             barsik.feed(1000.0);
             if (barsik.getStatus().equals("Exploded")){
+                Cat.setCount(--countLoader);
                 System.out.println(catsNames[2]+barsik.getStatus());
                 System.out.println(weightCats[2]+barsik.getWeight());
 
@@ -41,6 +44,7 @@ public class Loader
         for (int i=0; i<=localWeight; i++){
             kosoy.meow();
             if (kosoy.getStatus().equals("Dead")){
+                Cat.setCount(--countLoader);
                 System.out.println(catsNames[5]+kosoy.getStatus());
                 System.out.println(weightCats[5]+kosoy.getWeight());
                 break;
@@ -52,5 +56,7 @@ public class Loader
         roy.pee();
         roy.pee();
         System.out.println("Съедено = "+roy.getFeedAmount()+" грамм корма");
+        System.out.println("Всего кошек = "+Cat.getCount());
+
     }
 }
