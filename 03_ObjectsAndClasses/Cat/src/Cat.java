@@ -13,6 +13,7 @@ public class Cat
     private static final double MAXIMUM_WEIGHT = 9000.0;
     private CatColor catColor;
     private String name;
+    private static int count;
 
     public void setName(String name) {
         this.name = name;
@@ -30,72 +31,76 @@ public class Cat
         return catColor;
     }
 
-    public boolean isLiveStatus(){
-        if (getWeight()<maxWeight && getWeight()>minWeight){
-            liveStatus = true;
-        }else liveStatus = false;
-        return liveStatus;
-    }
-    private static int count = 0;
+
+
 
     public double getFeedAmount() {
         return feedAmount;
     }
-    public static int getCount() {
-        return count;
-    }
-    public static void setCount(int count) {
-        Cat.count = count;
-    }
 
+
+
+    public boolean isLiveStatus(){
+        if (getWeight()<maxWeight && getWeight()>minWeight){
+            liveStatus = true;
+        }else {
+            liveStatus = false;
+        }
+        return liveStatus;
+    }
     public Cat()
     {
-        count++;
+        count = getCount()+1;
         weight = 1500.0 + 3000.0 * Math.random();
         originWeight = weight;
         minWeight = 1000.0;
         maxWeight = 9000.0;
-
     }
     public Cat(double weight)
     {
-
-        count++;
+         this();
         this.weight = weight;
-        originWeight = weight;
-        minWeight = 1000.0;
-        maxWeight = 9000.0;
+    }
+
+    public void meow(){
+            if (isLiveStatus()){
+                weight = weight - 1;
+            } if (!isLiveStatus()){
+                System.out.println("Кошка мертва и не может мяукнуть");
+            }
+
 
     }
 
-    public void meow()
-    {
-        weight = weight - 1;
-        System.out.println("Meow");
-    }
+    public void feed(Double amount){
+        if (isLiveStatus()){
+            feedAmount +=amount;
+            weight = weight + amount;
+        } if (!isLiveStatus()){
+        System.out.println(" нельзя покормить, так как кошка мертва");}
 
-    public void feed(Double amount)
-    {
-        if (!isLiveStatus()){
-            System.out.println(" нельзя покормить, так как кошка мертва");
-
-        } else
-            feedAmount = feedAmount+amount;
-        weight = weight + amount;
     }
 
     public void drink(Double amount)
     {
-        if (!isLiveStatus()){
-            System.out.println(" нельзя напоить, так как кошка мертва");
-
-        } else
+        if (isLiveStatus()){
             weight = weight + amount;
+
+
+        } if (!isLiveStatus()){
+            System.out.println(" нельзя напоить, так как кошка мертва");
+    }
+
     }
     public void pee(){
-        if (!isLiveStatus()){System.out.println(" нельзя отправить в туалет, так как кошка мертва");
-        } else {weight = weight - 150;
+
+        if (isLiveStatus()){weight = weight - 150;
             System.out.println("Pee pee ka ka");
+
+
+        } if (!isLiveStatus()){
+
+            System.out.println(" нельзя отправить в туалет, так как кошка мертва");
         }
 
     }
@@ -108,9 +113,11 @@ public class Cat
     public String getStatus()
     {
         if(weight < minWeight) {
+            count=getCount()-1;
             return "Dead";
         }
         else if(weight > maxWeight) {
+            count = getCount()-1;
             return "Exploded";
         }
         else if(weight > originWeight) {
@@ -122,14 +129,15 @@ public class Cat
     }
     /**
      * метод для копирования
-     * @param weight
-     * @param catColor
-     * @param name
      */
-    public void copyCat(double weight, CatColor catColor, String name){
-        this.weight = weight;
-        setName(name);
-        setCatColor(catColor);
-
+    public Cat copyCat(){
+        Cat nameCat = new Cat();
+        nameCat.weight = weight;
+        nameCat.setName(name);
+        nameCat.setCatColor(catColor);
+        return nameCat;
+    }
+    public static int getCount() {
+        return count;
     }
 }

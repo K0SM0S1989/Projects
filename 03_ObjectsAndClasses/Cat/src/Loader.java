@@ -1,7 +1,7 @@
 
 public class Loader
 {
-    static int countLoader;
+
     public static void main(String[] args)
     {
         getKitten();
@@ -11,7 +11,8 @@ public class Loader
         Cat ryzhik = new Cat();
         Cat roy = new Cat();
         Cat kosoy = new Cat();
-        countLoader = Cat.getCount();
+
+
 
         String [] weightCats = {"Вес Мурки = ", "Вес Cони = ","Вес Барсика = ","Вес Рыжика = ","Вес Роя = ","Вес Косого = "};
         String [] catsNames = {"Мурка = ", "Cоня = ","Барсик = ","Рыжик = ","Рой = ","Косой = "};
@@ -29,29 +30,28 @@ public class Loader
 
         for (int i =0; i<=10;i++){
             barsik.feed(1000.0);
-            if (barsik.getStatus().equals("Exploded")){
-                Cat.setCount(--countLoader);
+            if (barsik.isLiveStatus() == false){
                 System.out.println(catsNames[2]+barsik.getStatus());
                 System.out.println(weightCats[2]+barsik.getWeight());
-
                 break;
             }
         }
+
         System.out.println("_______________");
-
-
 
         double localWeight = kosoy.getWeight();
         for (int i=0; i<=localWeight; i++){
             kosoy.meow();
-            if (kosoy.getStatus().equals("Dead")){
-                Cat.setCount(--countLoader);
+            if (kosoy.isLiveStatus() == false){
                 System.out.println(catsNames[5]+kosoy.getStatus());
                 System.out.println(weightCats[5]+kosoy.getWeight());
                 break;
             }
         }
+
+
         System.out.println("_______________");
+
         roy.feed(150.0);
         roy.pee();
         roy.pee();
@@ -61,11 +61,12 @@ public class Loader
 
         barsik.setName("Барсик");
         barsik.setCatColor(CatColor.RED_COLOR);
-        murka.copyCat(barsik.getWeight(), barsik.getCatColor(),barsik.getName() );
+        murka.setCatColor(CatColor.WHITE_COLOR);
+        murka.setName("Мурка");
 
-        System.out.println(murka.getName()+" "+murka.getWeight()+" "+murka.getCatColor());
-        System.out.println(barsik.getName()+" "+barsik.getWeight()+" "+barsik.getCatColor());
 
+        Cat objora= murka.copyCat();
+        System.out.println(objora.getName()+" "+objora.getWeight()+" "+objora.getCatColor());
     }
     private static Cat getKitten(){
         Cat kittenPushok = new Cat(1100.0);
