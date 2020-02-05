@@ -15,6 +15,8 @@ public class Cat
     private String name;
     private static int count;
 
+
+
     public void setName(String name) {
         this.name = name;
     }
@@ -42,8 +44,10 @@ public class Cat
 
     public boolean isLiveStatus(){
         if (getWeight()<maxWeight && getWeight()>minWeight){
+
             liveStatus = true;
         }else {
+
             liveStatus = false;
         }
         return liveStatus;
@@ -58,14 +62,20 @@ public class Cat
     }
     public Cat(double weight)
     {
-         this();
+
+        this();
         this.weight = weight;
+        originWeight = weight;
     }
 
     public void meow(){
             if (isLiveStatus()){
                 weight = weight - 1;
+                if (!isLiveStatus()){
+                    count--;
+                }
             } if (!isLiveStatus()){
+               // Cat.count = count-1;
                 System.out.println("Кошка мертва и не может мяукнуть");
             }
 
@@ -76,7 +86,11 @@ public class Cat
         if (isLiveStatus()){
             feedAmount +=amount;
             weight = weight + amount;
+            if (!isLiveStatus()){
+                count--;
+            }
         } if (!isLiveStatus()){
+           // Cat.count = count-1;
         System.out.println(" нельзя покормить, так как кошка мертва");}
 
     }
@@ -85,9 +99,12 @@ public class Cat
     {
         if (isLiveStatus()){
             weight = weight + amount;
-
+            if (!isLiveStatus()){
+                count--;
+            }
 
         } if (!isLiveStatus()){
+           // Cat.count = count-1;
             System.out.println(" нельзя напоить, так как кошка мертва");
     }
 
@@ -96,7 +113,9 @@ public class Cat
 
         if (isLiveStatus()){weight = weight - 150;
             System.out.println("Pee pee ka ka");
-
+            if (!isLiveStatus()){
+                count--;
+            }
 
         } if (!isLiveStatus()){
 
@@ -113,11 +132,11 @@ public class Cat
     public String getStatus()
     {
         if(weight < minWeight) {
-            count=getCount()-1;
+
             return "Dead";
         }
         else if(weight > maxWeight) {
-            count = getCount()-1;
+
             return "Exploded";
         }
         else if(weight > originWeight) {
