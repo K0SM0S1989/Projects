@@ -60,15 +60,10 @@ public class Main {
     }
 
     public static void addMethod(int pos, String delo){
-        String withoutFirstSecondWord = "";
-        String[] toDoWords = delo.split("\\s+");
-        for (int i = 2; i < toDoWords.length; i++){
-            withoutFirstSecondWord = withoutFirstSecondWord + " "+toDoWords[i];
-        }
-        withoutFirstSecondWord = withoutFirstSecondWord.trim();
+
         if (pos >= toDoList.size()){
-            toDoList.add(withoutFirstSecondWord);
-        }else toDoList.add(pos,withoutFirstSecondWord);
+            toDoList.add(withoutFirstSecondWords(2, delo));
+        }else toDoList.add(pos,withoutFirstSecondWords(2,delo));
         System.out.println("Дело добавлено в список");
     }
     public static void listMethod(int pos){
@@ -79,14 +74,10 @@ public class Main {
         }
     }
     public static void editMethod(int pos, String delo){
-        String withoutFirstSecondWord = "";
-        String[] toDoWords = delo.split("\\s+");
-        for (int i = 2; i < toDoWords.length; i++){
-            withoutFirstSecondWord = withoutFirstSecondWord + " "+toDoWords[i];
-        }
-        withoutFirstSecondWord = withoutFirstSecondWord.trim();
+
+
         toDoList.remove(pos);
-        toDoList.add(pos, withoutFirstSecondWord);
+        toDoList.add(pos, withoutFirstSecondWords(2, delo));
         System.out.println("Дело под номером - " +pos+ " изменено");
     }
     public static void deleteMethod(int pos){
@@ -95,13 +86,8 @@ public class Main {
     }
 
     public static void addMethod(String delo){
-        String withoutFirstSecondWord = "";
-        String[] toDoWords = delo.split("\\s+");
-        for (int i = 2; i < toDoWords.length; i++){
-            withoutFirstSecondWord = withoutFirstSecondWord + " "+toDoWords[i];
-        }
-        withoutFirstSecondWord = withoutFirstSecondWord.trim();
-        toDoList.add(withoutFirstSecondWord);
+
+        toDoList.add(withoutFirstSecondWords(1,delo));
         System.out.println("Дело добавлено в список");
     }
     public static void listMethod(){
@@ -117,5 +103,14 @@ public class Main {
     public static void deleteMethod(){
         toDoList.removeAll(toDoList);
         System.out.println("Список очищен полностью");
+    }
+    public static String withoutFirstSecondWords(int index, String delo){
+        String withoutFirstSecondWord = "";
+        String[] toDoWords = delo.split("\\s+");
+        for (int i = index; i < toDoWords.length; i++){
+            withoutFirstSecondWord = withoutFirstSecondWord + " "+toDoWords[i];
+        }
+        withoutFirstSecondWord = withoutFirstSecondWord.trim();
+        return withoutFirstSecondWord;
     }
 }
