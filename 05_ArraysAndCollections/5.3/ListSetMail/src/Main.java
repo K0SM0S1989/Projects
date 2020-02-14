@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
@@ -14,31 +15,30 @@ public class Main {
             System.out.println("Введите команду:");
             Scanner scanner = new Scanner(System.in);
             String eMailAndCommand = scanner.nextLine();
-            String [] words = eMailAndCommand.split("\\s+");
+            String[] words = eMailAndCommand.split("\\s+");
             String command = words[0];
             String listCommand = "LIST";
             String addCommand = "ADD";
             String stopCommand = "STOP";
-            Pattern patternEMail = Pattern.compile("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b");
-            if (words.length > 1 && words[1].matches(String.valueOf(patternEMail))) {
+
+            if (words.length > 1 && isValidEmail(words[1])) {
 
                 if (command.matches(addCommand)) {
-                addMethod(words[1]);
+                    if (isCheckEMail(words[1])){
+                        System.out.println("Адрес уже есть в списке");
+                    } else addMethod(words[1]);
                 } else {
-                System.out.println("Вы ввели неверную команду!\nПопробуйте снова:");
+                    System.out.println("Вы ввели неверную команду!\nПопробуйте снова:");
                 }
-                }else
-
-                if (words.length > 1 && !words[1].matches(String.valueOf(patternEMail))){
+            } else if (words.length > 1 && !isValidEmail(words[1])) {
                 System.out.println("Неправильно введена почта");
-                } else
-
-                 if (words.length == 1){
-                 if (command.matches(listCommand)) {
-                 listMethod();
-                 } else if (command.matches(stopCommand)) {
-                 check = false;
-                 }else {System.out.println("Вы ввели неверную команду!\nПопробуйте снова:");
+            } else if (words.length == 1) {
+                if (command.matches(listCommand)) {
+                    listMethod();
+                } else if (command.matches(stopCommand)) {
+                    check = false;
+                } else {
+                    System.out.println("Вы ввели неверную команду!\nПопробуйте снова:");
                 }
             }
         }
@@ -57,5 +57,21 @@ public class Main {
                 System.out.println(word);
             }
         }
+    }
+    public static boolean isValidEmail(String email){
+        Pattern patternEmail = Pattern.compile("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b");
+        Matcher matcher = patternEmail.matcher(email);
+        return matcher.matches();
+    }
+    public static boolean isCheckEMail(String email){
+        boolean check = false;
+        for (String word : eMailList){
+            check = word.equals(email);
+          if (check == true){
+              break;
+          }
+
+        }
+        return check;
     }
 }
