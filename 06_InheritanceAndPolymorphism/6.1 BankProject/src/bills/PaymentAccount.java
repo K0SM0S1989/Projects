@@ -2,7 +2,7 @@ package bills;
 
 public class PaymentAccount {
 
-    public double balance;//баланс
+    private double balance;//баланс
 
     public PaymentAccount(int balance){
         this.balance=balance;
