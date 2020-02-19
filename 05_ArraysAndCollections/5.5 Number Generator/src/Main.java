@@ -5,9 +5,7 @@ public class Main {
 
         ArrayList<String> list = new ArrayList<String>();
 
-        for (int i = 0; i<=2500000; i++){//заполнение списка 2500000 номерами
-            list.add(getAutoNumber());
-        }
+        getAutoNumber(list);
 
         HashSet<String> hSet = new HashSet<String>();
         hSet.addAll(list);
@@ -67,18 +65,25 @@ public class Main {
 
     }
 
-    private static String getAutoNumber(){
+    private static void getAutoNumber(ArrayList<String> arrayList){
         String [] letters = {"А", "В", "Е", "К", "М", "Н", "О", "Р", "С", "Т", "У", "Х"};
         String [] numbers = {"111", "222","333","444","555","666","777","888","999"};
+        String [] region = new String[199];
+        for (int i = 0; i < region.length; i++){
+            region [i] = String.format("%02d", i+1);
+        }
 
+        for (int i = 0; i < numbers.length; i++){
+            for (int j = 0; j < letters.length; j++){
+                for (int k = 0; k < letters.length; k++){
+                    for (int m = 0; m < letters.length; m++){
+                        for (int n = 0; n < region.length; n++){
+                            arrayList.add(letters[j]+numbers[i]+letters[k]+letters[m]+region[n]);
+                        }
+                    }
+                }
+            }
+        }
 
-        int firstLetterIndex = (int)(Math.random()*12);
-        int  secondLetterIndex = (int)(Math.random()*12);
-        int  thirdLetterIndex =(int) (Math.random()*12);
-        int numberIndex = (int)(Math.random()*9);
-        String region = String.format("%02d", (int) (Math.random()*199+1));
-
-        String autoNumber = letters[firstLetterIndex]+numbers[numberIndex]+letters[secondLetterIndex]+letters[thirdLetterIndex]+region;
-        return autoNumber;
     }
 }
