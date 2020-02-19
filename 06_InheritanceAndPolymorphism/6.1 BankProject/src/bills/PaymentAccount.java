@@ -23,7 +23,10 @@ public class PaymentAccount {
      */
 
     public void withdrawal(double withdrawal) {
-        this.balance -=withdrawal;
+        if (withdrawal > balance){
+            System.out.println("Недостаточно средств на счёте!");
+        } else this.balance -=withdrawal;
+
     }
 
     /**
