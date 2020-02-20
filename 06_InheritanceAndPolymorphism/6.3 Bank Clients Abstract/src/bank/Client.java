@@ -2,11 +2,9 @@ package bank;
 
 public abstract class Client {
 
-private double paymentAccount;
+    private double paymentAccount;
 
-
-
-    public  double getPaymentAccount(){
+    public double getPaymentAccount() {
         return paymentAccount;
     }
 
@@ -14,15 +12,14 @@ private double paymentAccount;
         this.paymentAccount = paymentAccount;
     }
 
-    public  void withdrawal(double withdrawal){
-        if (withdrawal > paymentAccount){
+    public void withdrawal(double withdrawal) {
+        if (withdrawal > paymentAccount) {
             System.out.println("Недостаточно средств для снятия!");
-        } else paymentAccount -=withdrawal;
+        } else paymentAccount -= withdrawal;
     }
 
-
-    public  void replenishment(double replenishment){
-        paymentAccount +=replenishment;
+    public void replenishment(double replenishment) {
+        paymentAccount += replenishment;
     }
 
 }
