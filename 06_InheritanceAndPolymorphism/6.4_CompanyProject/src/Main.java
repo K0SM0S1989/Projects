@@ -22,14 +22,23 @@ public class Main {
         company.hireAll(arrayListManager);
         company.hireAll(arrayListOperator);
 
-        company.fire(52);
-        company.fire(101);
-        company.hire(new Operator());
-        company.hire(new Manager(company));
-
         company.getTopSalaryStaff(15);
         System.out.println("================");
-        company.getLowestSalaryStaff(40);
+        company.getLowestSalaryStaff(30);
+        System.out.println("================");
+        System.out.println("Количество работников в компании - " + company.getEmployeesCount());
+
+        int dismissalList = company.getEmployeesCount() / 2;
+
+
+        for (int i = 0; i < dismissalList; i++) {
+            company.fire(i);
+        }
+
+        System.out.println("================");
+        company.getTopSalaryStaff(15);
+        System.out.println("================");
+        company.getLowestSalaryStaff(30);
 
         System.out.println("Количество работников в компании - " + company.getEmployeesCount());
     }
