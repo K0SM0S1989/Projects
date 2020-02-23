@@ -7,16 +7,12 @@ public class Manager implements Employee{
 
     public Manager(Company company){
         company.setIncome(earnedMoney);
-        setMonthSalary();
+
     }
     @Override
     public double getMonthSalary() {
-       return monthSalary;
-    }
-
-    public void setMonthSalary() {
-
-        double procent = earnedMoney*0.05;
-        this.monthSalary = FIX_PRICE+procent;
+        double procent = earnedMoney * 0.05;
+        this.monthSalary = FIX_PRICE + procent;
+        return monthSalary;
     }
 }

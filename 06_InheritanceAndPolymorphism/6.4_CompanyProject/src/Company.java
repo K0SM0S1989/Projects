@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class Company {
 
     private double income;
-    private ArrayList<Employee> employees = new ArrayList<>();
+    private List<Employee> employees = new ArrayList<>();
 
 
     public void hire(Employee employee) {
@@ -26,23 +28,12 @@ public class Company {
             count = employees.size();
             System.out.println("Запрашиваемое число превышает количество сотрудников");
         }
-        employees.sort((Comparator<Employee>) (o1, o2) -> {
-            if (o1.getMonthSalary() < o2.getMonthSalary()) {
-                return 1;
-            }
-            if (o1.getMonthSalary() > o2.getMonthSalary()) {
-                return -1;
-            }
-            return 0;
-        });
+        Collections.sort(employees, Comparator.comparingDouble(Employee::getMonthSalary).reversed());
         ArrayList<Employee> arrayLists = new ArrayList<>();
-
-
         for (int i = 0; i < count; i++) {
             arrayLists.add(employees.get(i));
             System.out.println((i + 1) + ") " + arrayLists.get(i).getMonthSalary());
         }
-
         return arrayLists;
     }
 
@@ -51,15 +42,8 @@ public class Company {
             count = employees.size();
             System.out.println("Запрашиваемое число превышает количество сотрудников");
         }
-        employees.sort((Comparator<Employee>) (o1, o2) -> {
-            if (o1.getMonthSalary() < o2.getMonthSalary()) {
-                return -1;
-            }
-            if (o1.getMonthSalary() > o2.getMonthSalary()) {
-                return 1;
-            }
-            return 0;
-        });
+        Collections.sort(employees, Comparator.comparingDouble(Employee::getMonthSalary));
+
         ArrayList<Employee> arrayLists = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             arrayLists.add(employees.get(i));
