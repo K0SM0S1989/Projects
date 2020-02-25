@@ -5,26 +5,29 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class Main
-{
+public class Main{
     private static String staffFile = "data/staff.txt";
     private static String dateFormat = "dd.MM.yyyy";
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args){
         ArrayList<Employee> staff = loadStaffFromFile();
 
+       Collections.sort(staff, ((o1, o2) -> {
+           int a =  o1.getSalary()-o2.getSalary();
+           int b = o1.getName().compareTo(o2.getName());
+         return a+b;
+       }));
 
+        for (Employee employee : staff){
+            System.out.println(employee);
+        }
     }
 
-    private static ArrayList<Employee> loadStaffFromFile()
-    {
+    private static ArrayList<Employee> loadStaffFromFile(){
         ArrayList<Employee> staff = new ArrayList<>();
-        try
-        {
+        try{
             List<String> lines = Files.readAllLines(Paths.get(staffFile));
-            for(String line : lines)
-            {
+            for(String line : lines){
                 String[] fragments = line.split("\t");
                 if(fragments.length != 3) {
                     System.out.println("Wrong line: " + line);
