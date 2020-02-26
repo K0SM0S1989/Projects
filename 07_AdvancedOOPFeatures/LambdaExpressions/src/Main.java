@@ -12,11 +12,8 @@ public class Main{
     public static void main(String[] args){
         ArrayList<Employee> staff = loadStaffFromFile();
 
-       Collections.sort(staff, ((o1, o2) -> {
-           int a =  o1.getSalary()-o2.getSalary();
-           int b = o1.getName().compareTo(o2.getName());
-         return a+b;
-       }));
+       Collections.sort(staff, Comparator.comparingDouble(Employee::getSalary)
+               .thenComparing((o1, o2) -> o1.getName().compareTo(o2.getName())) );
 
         for (Employee employee : staff){
             System.out.println(employee);
