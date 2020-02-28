@@ -20,9 +20,8 @@ public class Main {
                 .filter(h -> (h.getDate().getHours() - date.getHours()) <= 2)
                 .filter(h -> (h.getDate().getHours() - date.getHours()) > 0)
                 .filter(h -> h.getDate().getMinutes() <= date.getMinutes())
-                .forEach(h -> {
-                    System.out.println(HOUR_FORMAT.format(h.getDate()) + " - " + h.getAircraft());
-                });
+                .forEach(h -> System.out.println(HOUR_FORMAT.format(h.getDate()) + " - " + h.getAircraft()));
+
     }
 
 }
