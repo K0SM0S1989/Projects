@@ -1,11 +1,9 @@
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.HashMap;
-import java.util.List;
+
 
 public class CustomerStorage {
+
     private HashMap<String, Customer> storage;
 
     public CustomerStorage() {
@@ -18,10 +16,16 @@ public class CustomerStorage {
             throw new IllegalArgumentException("Wrong format. Correct format:\n" +
                     "add Василий Петров " + "vasily.petrov@gmail.com +79215637722");
         }
-
         String name = components[0] + " " + components[1];
-        storage.put(name, new Customer(name, components[3], components[2]));
+        Customer customer = new Customer(name, components[3], components[2]);
+        try {
+            customer.validate();
+            storage.put(name, customer);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
+
 
     public void listCustomers() {
 
@@ -35,4 +39,7 @@ public class CustomerStorage {
     public int getCount() {
         return storage.size();
     }
+
+
+
 }
