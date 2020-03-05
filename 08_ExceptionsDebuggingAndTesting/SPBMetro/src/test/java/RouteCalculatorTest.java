@@ -1,6 +1,7 @@
 import core.Line;
 import core.Station;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class RouteCalculatorTest{
    RouteCalculator routeCalculator;
 
 
-
+    @BeforeEach
     protected void setUp(){
 
 
@@ -60,7 +61,6 @@ public class RouteCalculatorTest{
     }
     @Test
     public void calculateDuration(){
-        setUp();
         double actual = RouteCalculator.calculateDuration(route);
         double expected = 19.5;
         assertEquals(expected, actual);
@@ -68,7 +68,6 @@ public class RouteCalculatorTest{
 
     @Test
     public void getShortestRouteWithOneConnect()  {
-        setUp();
         List<Station> actual =  routeCalculator.getShortestRoute(route.get(1),route.get(5));
         List<Station> stationListExpected = new ArrayList<>();
         stationListExpected.add(new Station("Елизаровская",line1));
@@ -80,7 +79,6 @@ public class RouteCalculatorTest{
     }
     @Test
     public void getShortestRouteWithTwoConnect()  {
-        setUp();
         List<Station> actual =  routeCalculator.getShortestRoute(route.get(1),route.get(7));
         List<Station> stationListExpected = new ArrayList<>();
         stationListExpected.add(new Station("Елизаровская",line1));
@@ -95,7 +93,6 @@ public class RouteCalculatorTest{
 
     @Test
     public void getShortestRouteWithoutConnect()  {
-        setUp();
         List<Station> actual =  routeCalculator.getShortestRoute(route.get(0),route.get(3));
         List<Station> stationListExpected = new ArrayList<>();
         stationListExpected.add(new Station("Пролетарская", line1));
@@ -105,7 +102,15 @@ public class RouteCalculatorTest{
 
         assertEquals(stationListExpected, actual);
     }
+    @Test
+    public void getShortestRouteWithoutConnectNull()  {
+        List<Station> actual =  routeCalculator.getShortestRoute(null, null);
+        List<Station> stationListExpected = new ArrayList<>();
+        stationListExpected.add(null);
+        stationListExpected.add(null);
 
+        assertEquals(stationListExpected, actual);
+    }
 
 
 
