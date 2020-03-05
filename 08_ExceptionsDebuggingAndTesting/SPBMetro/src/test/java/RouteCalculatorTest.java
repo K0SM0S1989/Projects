@@ -1,11 +1,12 @@
 import core.Line;
 import core.Station;
-import junit.framework.TestCase;
-
+import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RouteCalculatorTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class RouteCalculatorTest{
     List<Station> route;
     List<Station> connection1;
     List<Station> connection2;
@@ -16,8 +17,8 @@ public class RouteCalculatorTest extends TestCase {
    RouteCalculator routeCalculator;
 
 
-    @Override
-    protected void setUp() throws Exception {
+
+    protected void setUp(){
 
 
         route = new ArrayList<>();
@@ -57,15 +58,17 @@ public class RouteCalculatorTest extends TestCase {
         routeCalculator = new RouteCalculator(stationIndex);
 
     }
-
-    public void testCalculateDuration(){
+    @Test
+    public void calculateDuration(){
+        setUp();
         double actual = RouteCalculator.calculateDuration(route);
         double expected = 19.5;
         assertEquals(expected, actual);
     }
 
-    public void testGetShortestRouteWithOneConnect()  {
-
+    @Test
+    public void getShortestRouteWithOneConnect()  {
+        setUp();
         List<Station> actual =  routeCalculator.getShortestRoute(route.get(1),route.get(5));
         List<Station> stationListExpected = new ArrayList<>();
         stationListExpected.add(new Station("Елизаровская",line1));
@@ -75,8 +78,9 @@ public class RouteCalculatorTest extends TestCase {
         stationListExpected.add(new Station("Дыбенко",line2));
         assertEquals(stationListExpected, actual);
     }
-    public void testGetShortestRouteWithTwoConnect()  {
-
+    @Test
+    public void getShortestRouteWithTwoConnect()  {
+        setUp();
         List<Station> actual =  routeCalculator.getShortestRoute(route.get(1),route.get(7));
         List<Station> stationListExpected = new ArrayList<>();
         stationListExpected.add(new Station("Елизаровская",line1));
@@ -89,10 +93,21 @@ public class RouteCalculatorTest extends TestCase {
         assertEquals(stationListExpected, actual);
     }
 
+    @Test
+    public void getShortestRouteWithoutConnect()  {
+        setUp();
+        List<Station> actual =  routeCalculator.getShortestRoute(route.get(0),route.get(3));
+        List<Station> stationListExpected = new ArrayList<>();
+        stationListExpected.add(new Station("Пролетарская", line1));
+        stationListExpected.add(new Station("Елизаровская",line1));
+        stationListExpected.add(new Station("Новочеркасская",line1));
+        stationListExpected.add(new Station("Ладожская",line1));
 
-
-    @Override
-    protected void tearDown() throws Exception {
-
+        assertEquals(stationListExpected, actual);
     }
+
+
+
+
+
 }
