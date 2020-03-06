@@ -1,0 +1,1 @@
+2020-03-06 21:28:45.839 [main] ERROR loggerErrors - Возникла ошибка: class java.lang.String cannot be cast to class core.Station (java.lang.String is in module java.base of loader 'bootstrap'; core.Station is in unnamed module of loader 'app')
