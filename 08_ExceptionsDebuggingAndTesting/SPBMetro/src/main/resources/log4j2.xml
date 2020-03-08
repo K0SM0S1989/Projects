@@ -4,31 +4,33 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
-        <File name="MyFileFailStation" fileName="logs/failStation.log">
+        <File name="wrong_input" fileName="logs/failStation.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </File>
-        <File name="MyFileFindStation" fileName="logs/findStation.log">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Filters>
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL" />
+            </Filters>
         </File>
 
-        <File name="MyFileErrors" fileName="logs/errors.log">
+        <File name="searched_stations" fileName="logs/findStation.log">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Filters>
+                <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL" />
+            </Filters>
+        </File>
+
+        <File name="errors2File" fileName="logs/errors.log">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
     </appenders>
 
     <loggers>
         <root level="info">
-            <appender-ref ref="Console" level="info"/>
+
+            <appender-ref ref="errors2File" level="error"/>
+            <appender-ref ref="wrong_input" level="warn"/>
+            <appender-ref ref="searched_stations" level="info"/>
         </root>
-        <Logger name="loggerFail" level="info" additivity="false">
-            <AppenderRef ref="MyFileFailStation" level="INFO"/>
-        </Logger>
-        <Logger name="loggerStation" level="info" additivity="false">
-            <AppenderRef ref="MyFileFindStation" level="INFO"/>
-        </Logger>
-        <Logger name="loggerErrors" level="error" additivity="false">
-            <AppenderRef ref="MyFileErrors" level="error"/>
-        </Logger>
+
 
     </loggers>
 </configuration>
