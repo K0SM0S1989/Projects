@@ -1,0 +1,23 @@
+Россия +7
+Азербайджан +994
+Армения +374
+Беларусь +375
+Казахстан +7
+Киргизия +996
+Молдавия +373
+Таджикистан +992
+Туркменистан +993
+Узбекистан +998
+Украина +380
+https://gitlab.skillbox.ru/artamokhin_mikhail/java_basics.git
+https://gitlab.skillbox.ru/artamokhin_mikhail/java_basics.git
+
+х     х
+ х   х
+  х х
+   х
+  х х
+ х   х
+х     х
+01234
+averageTemperatures() and healthPacients()
