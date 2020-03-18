@@ -5,8 +5,57 @@ public class BankProduct {
     private String dateOfOperation;
     private String reference;
     private String operationDescription;
+
+    public BankProduct setTypeOfAccount(String typeOfAccount) {
+        this.typeOfAccount = typeOfAccount;
+        return this;
+    }
+
     private String income;
     private String consumption;
+
+    public BankProduct setNumberOfAccount(String numberOfAccount) {
+        this.numberOfAccount = numberOfAccount;
+        return this;
+    }
+
+    public BankProduct setCurrency(String currency) {
+        this.currency = currency;
+        return this;
+    }
+
+    public BankProduct setDateOfOperation(String dateOfOperation) {
+        this.dateOfOperation = dateOfOperation;
+        return this;
+    }
+
+    public BankProduct setReference(String reference) {
+        this.reference = reference;
+        return this;
+    }
+
+    public BankProduct setOperationDescription(String operationDescription) {
+        if (operationDescription.matches(stringSpace)) {
+            this.operationDescription = operationDescription;
+        } else {
+            String[] operationDescriptions = operationDescription.split("\\s{3,}");
+            this.operationDescription = operationDescriptions[1];
+        }
+        return this;
+    }
+
+    public BankProduct setIncome(String income) {
+        this.income = income;
+        return this;
+    }
+
+    public BankProduct setConsumption(String consumption) {
+        char reg = '\"';
+        if (consumption.charAt(0) == reg) {
+            this.consumption = consumption.substring(1, consumption.length() - 1).replace(",", ".");
+        } else this.consumption = consumption;
+        return this;
+    }
 
     static String stringSpace = "[А-Яа-я]+\\s+[А-Яа-я]+";
 
@@ -15,75 +64,33 @@ public class BankProduct {
         return typeOfAccount;
     }
 
-    public void setTypeOfAccount(String typeOfAccount) {
-        this.typeOfAccount = typeOfAccount;
+    public String getConsumption() {
+        return consumption;
     }
 
     public String getNumberOfAccount() {
         return numberOfAccount;
     }
 
-    public void setNumberOfAccount(String numberOfAccount) {
-        this.numberOfAccount = numberOfAccount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
     public String getDateOfOperation() {
         return dateOfOperation;
-    }
-
-    public void setDateOfOperation(String dateOfOperation) {
-        this.dateOfOperation = dateOfOperation;
     }
 
     public String getReference() {
         return reference;
     }
 
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
     public String getOperationDescription() {
         return operationDescription;
-    }
-
-    public void setOperationDescription(String operationDescription) {
-        if (operationDescription.matches(stringSpace)) {
-            this.operationDescription = operationDescription;
-        } else {
-            String[] operationDescriptions = operationDescription.split("\\s{3,}");
-            this.operationDescription = operationDescriptions[1];
-        }
-
     }
 
     public String getIncome() {
         return income;
     }
 
-    public void setIncome(String income) {
 
-        this.income = income;
-    }
-
-    public String getConsumption() {
-        return consumption;
-    }
-
-    public void setConsumption(String consumption) {
-        char reg = '\"';
-        if (consumption.charAt(0) == reg) {
-            this.consumption = consumption.substring(1, consumption.length() - 1).replace(",", ".");
-        } else this.consumption = consumption;
-
+    public String getCurrency() {
+        return currency;
     }
 
 

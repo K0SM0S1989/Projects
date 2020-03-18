@@ -37,19 +37,16 @@ public class Main {
                             } else columnList.add(text);
                         }
                         return columnList;
-                    }).filter(strings -> strings.size() == 8).map(strings -> {
-                        BankProduct product = new BankProduct();
-                        product.setTypeOfAccount(strings.get(0));
-                        product.setNumberOfAccount(strings.get(1));
-                        product.setCurrency(strings.get(2));
-                        product.setDateOfOperation(strings.get(3));
-                        product.setReference(strings.get(4));
-                        product.setOperationDescription(strings.get(5));
-                        product.setIncome(strings.get(6));
-                        product.setConsumption(strings.get(7));
-                        return product;
-
-                    }).collect(Collectors.toList());
+                    }).filter(strings -> strings.size() == 8).map(strings -> new BankProduct()
+                            .setTypeOfAccount(strings.get(0))
+                            .setNumberOfAccount(strings.get(1))
+                            .setCurrency(strings.get(2))
+                            .setDateOfOperation(strings.get(3))
+                            .setReference(strings.get(4))
+                            .setOperationDescription(strings.get(5))
+                            .setIncome(strings.get(6))
+                            .setConsumption(strings.get(7))
+                    ).collect(Collectors.toList());
 
         } catch (IOException e) {
             e.printStackTrace();
