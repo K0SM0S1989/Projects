@@ -3,6 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Main {
@@ -22,33 +23,38 @@ public class Main {
                 .map(s -> s.getOperationDescription() + " --- " + s.getConsumption()).forEach(System.out::println);
     }
 
-    private static List<BankProduct> parseProductCsv() throws IOException {
+    private static List<BankProduct> parseProductCsv() {
         List<BankProduct> products = new ArrayList<>();
-        List<String> fileLines = Files.readAllLines(Paths.get(filePath));
-        for (String fileLine : fileLines) {
-            String[] splitedText = fileLine.split(",");
-            ArrayList<String> columnList = new ArrayList<>();
-            for (int i = 0; i < splitedText.length; i++) {
-                if (isColumnPart(splitedText[i])) {
-                    String lastText = columnList.get(columnList.size() - 1);
-                    columnList.set(columnList.size() - 1, lastText + "," + splitedText[i]);
-                } else {
-                    columnList.add(splitedText[i]);
-                }
-            }
-            BankProduct product = new BankProduct();
-            product.setTypeOfAccount(columnList.get(0));
-            product.setNumberOfAccount(columnList.get(1));
-            product.setCurrency(columnList.get(2));
-            product.setDateOfOperation(columnList.get(3));
-            product.setReference(columnList.get(4));
-            product.setOperationDescription(columnList.get(5));
-            product.setIncome(columnList.get(6));
-            product.setConsumption(columnList.get(7));
+        try {
+            List<String> list = Files.readAllLines(Paths.get(filePath));
+            products = list.stream().map(s -> s.split(","))
+                    .map(strings -> {
+                        ArrayList<String> columnList = new ArrayList<>();
+                        for (String text : strings) {
+                            if (isColumnPart(text)) {
+                                String lastText = columnList.get(columnList.size() - 1);
+                                columnList.set(columnList.size() - 1, lastText + "," + text);
+                            } else columnList.add(text);
+                        }
+                        return columnList;
+                    }).filter(strings -> strings.size() == 8).map(strings -> {
+                        BankProduct product = new BankProduct();
+                        product.setTypeOfAccount(strings.get(0));
+                        product.setNumberOfAccount(strings.get(1));
+                        product.setCurrency(strings.get(2));
+                        product.setDateOfOperation(strings.get(3));
+                        product.setReference(strings.get(4));
+                        product.setOperationDescription(strings.get(5));
+                        product.setIncome(strings.get(6));
+                        product.setConsumption(strings.get(7));
+                        return product;
 
-            products.add(product);
+                    }).collect(Collectors.toList());
 
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return products;
     }
 
