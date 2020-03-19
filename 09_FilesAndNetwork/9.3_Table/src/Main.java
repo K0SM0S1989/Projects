@@ -13,10 +13,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         List<BankProduct> products = parseProductCsv();
-        System.out.println("Общий доход - " + products.stream().filter(s -> !s.getIncome().matches(string))
+        System.out.println("Общий доход - " + products.stream().skip(1)
                 .mapToDouble(a -> Double.valueOf(a.getIncome())).sum());
 
-        System.out.println("Общий расход - " + products.stream().filter(s -> !s.getConsumption().matches(string))
+        System.out.println("Общий расход - " + products.stream().skip(1)
                 .mapToDouble(a -> Double.valueOf(a.getConsumption())).sum());
 
         products.stream().filter(s -> s.getConsumption().matches(string) || Double.valueOf(s.getConsumption()) != 0)
