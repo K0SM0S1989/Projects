@@ -34,12 +34,13 @@ public class DownloadImages {
         String name = nameAll.replaceAll(wrangSymbol, "_");
         System.out.println(name);
         URL url = new URL(src);
-        InputStream in = url.openStream();
-        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(folderPath + name))) {
+
+        try (InputStream in = url.openStream();
+             OutputStream out = new BufferedOutputStream(new FileOutputStream(folderPath + name))) {
             for (int b = 0; (b = in.read()) != -1; ) {
                 out.write(b);
             }
         }
-        in.close();
+
     }
 }
