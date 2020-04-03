@@ -1,18 +1,17 @@
-
-import org.json.simple.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.*;
 
 public class MosMetroParser {
     private static Map<String, List<String>> stations = new LinkedHashMap<>();
     private static Map<String, String> linesItem;
-    private static List<String> list = new ArrayList<>();
     private static List<Map> lines = new ArrayList<>();
     private static String[] lineColors = {"red", "green", "blue", "blue",
             "brown", "orange", "violet", "yellow", "grey", "green", "blue", "blue", "pink"};
@@ -20,13 +19,16 @@ public class MosMetroParser {
     private static Map<String, Object> mosMetro = new LinkedHashMap<>();
     private static List<List> connections = new ArrayList<>();
 
-
     public static void getMosMetro() throws IOException {
         Document page = Jsoup.connect("https://ru.wikipedia.org/wiki/Список_станций_Московского_метрополитена").get();
         Element tableBody = page.select("tbody").get(3);
 
         Elements elements = tableBody.select("tr").next();
-        connections.addAll(connectionsMetod(tableBody));
+        stationsAndLines(tableBody);
+
+        connections.addAll(connectionsMetod(tableBody,page));
+
+
 
         for (Element el : elements) {
             linesItemMetod(el);
@@ -37,17 +39,18 @@ public class MosMetroParser {
 
 
         lines.addAll(linesSet);
-        stationsAndLines(tableBody);
-
         mosMetro.put("stations", stations);
         mosMetro.put("lines", lines);
         mosMetro.put("connections", connections);
 
-        JSONObject jsonObject = new JSONObject(mosMetro);
-        createJsonFile(jsonObject);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(new File("src/main/resources/map.json"), mosMetro);
+
     }
 
     private static Map stationsAndLines(Element tbody) {
+        final List[] list = new List[]{new ArrayList<>()};
         Elements elements = tbody.select("tr").next();
         elements.stream().filter(element -> !element.hasClass("shadow"))
                 .map(element -> {
@@ -55,18 +58,17 @@ public class MosMetroParser {
                     Element lineNumber = element.select("span[class=sortkey]").get(0);
                     Element station = element.select("a").get(1);
                     lineNumberString = lineNumber.text();
-                    if (lineNumberString.equals("8А") && element.select("span[class=sortkey]")
-                            .get(1).text().equals("11")) {
+                    if (element.select("td").get(0).select("span").size() > 3){
                         lineNumberString = element.select("span[class=sortkey]").get(1).text();
                         station = element.select("a").get(2);
                     }
                     if (!stations.containsKey(lineNumberString)) {
-                        list = new ArrayList<>();
+                        list[0] = new ArrayList<>();
                     }
-                    list.add(station.text());
+                    list[0].add(station.text());
                     return lineNumberString;
-                })
-                .forEach(key -> stations.put(key, list));
+                }).forEach(key -> stations.put(key, list[0]));
+
         addStation(stations);
         return stations;
     }
@@ -76,15 +78,6 @@ public class MosMetroParser {
             if (map.containsKey("8А")) {
                 map.get("8А").add(map.get("11").get(i));
             }
-        }
-    }
-
-    private static void createJsonFile(JSONObject jsonObject) {
-        try {
-            String json = jsonObject.toString();
-            Files.write(Paths.get("data/map.json"), Collections.singleton(json));
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -157,10 +150,9 @@ public class MosMetroParser {
 
         return linesItem;
     }
+    private static List connectionsMetod(Element tbody, Document page) throws IOException {
 
-
-    private static List connectionsMetod(Element tbody) throws IOException {
-
+        Map<String,List<String>> allStatioons = new LinkedHashMap<>();
         List<List> connectionListMetod = new ArrayList<>();
         List<Map> oneConnection;
         HashSet<String> selection = new HashSet<>();
@@ -168,6 +160,9 @@ public class MosMetroParser {
         String[] keyString = {"line", "station"};
         Elements trs = tbody.select("tr").next();
 
+        allStatioons.putAll(stationsAndLinesForConection(tbody));
+        allStatioons.putAll(addMCK(page));
+        allStatioons.putAll(addMono(page));
         for (Element element : trs) {
 
             boolean selectionBoolean = true;
@@ -176,16 +171,13 @@ public class MosMetroParser {
             if (!element.hasClass("shadow")) {
                 String lineNumber = element.select("span[class=sortkey]").get(0).text();
                 String station = element.select("a").get(1).text();
-
                 oneConnection = new ArrayList<>();
 
-                if (lineNumber.equals("8А") && element.select("span[class=sortkey]")
-                        .get(1).text().equals("11")) {
+                if (element.select("td").get(0).select("span").size() > 3) {
                     station = element.select("a").get(2).text();
                     oneItemOfConnectionMap.put(keyString[0], lineNumber);
                     oneItemOfConnectionMap.put(keyString[1], station);
                     oneConnection.add(oneItemOfConnectionMap);
-
                     oneItemOfConnectionMap = new TreeMap<>();
                     lineNumber = element.select("span[class=sortkey]").get(1).text();
                     oneItemOfConnectionMap.put(keyString[0], lineNumber);
@@ -198,14 +190,11 @@ public class MosMetroParser {
                 }
 
                 selection.add(lineNumber);
-
                 Element td = element.select("td").get(3);
                 if (!td.attr("data-sort-value").equals("Infinity")) {
                     Elements spans = td.select("span");
                     String connectLineNumber;
-                    String connectionStation;
                     for (Element span : spans) {
-
                         if (!span.text().equals("")) {
                             oneItemOfConnectionMap = new TreeMap<>();
                             connectLineNumber = span.text();
@@ -215,20 +204,14 @@ public class MosMetroParser {
                             }
                             continue;
                         }
-                        if (span.select("a").size() > 0) {
-                            Element aClass = span.select("a").get(0);
-                            String aHref = aClass.attr("href");
-                            Document document;
-                            try {
-                                document = Jsoup.connect("https://ru.wikipedia.org" + aHref).get();
-                                connectionStation = document.select("h1").get(0).text().split("\\(")[0].trim();
-                                oneItemOfConnectionMap.put(keyString[1], connectionStation);
-                            } catch (Exception ex) {
-                                document = Jsoup.connect("https://ru.wikipedia.org/wiki/Театральная_(станция_метро,_Москва)").get();
-                                connectionStation = document.select("h1").get(0).text().split("\\(")[0].trim();
-                                oneItemOfConnectionMap.put(keyString[1], connectionStation);
+                        if (!span.attr("title").equals("")){
+                            for (String st : allStatioons.get(oneItemOfConnectionMap.get(keyString[0]))){
+                                if (span.attr("title").contains(st)){
+                                    oneItemOfConnectionMap.put(keyString[1],st);
+                                }
                             }
                         }
+
                         oneConnection.add(oneItemOfConnectionMap);
                     }
                     if (selectionBoolean) {
@@ -240,7 +223,61 @@ public class MosMetroParser {
         return connectionListMetod;
     }
 
+    private static Map stationsAndLinesForConection(Element tbody) {
+        Map<String, List<String>> allStations = new LinkedHashMap<>();
+        final List[] list = new List[]{new ArrayList<>()};
+        Elements elements = tbody.select("tr").next();
+        elements.stream()
+                .map(element -> {
+                    String lineNumberString;
+                    Element lineNumber = element.select("span[class=sortkey]").get(0);
+                    Element station = element.select("a").get(1);
+                    lineNumberString = lineNumber.text();
+                    if (element.select("td").get(0).select("span").size() > 3){
+                        lineNumberString = element.select("span[class=sortkey]").get(1).text();
+                        station = element.select("a").get(2);
+                    }
+                    if (!allStations.containsKey(lineNumberString)) {
+                        list[0] = new ArrayList<>();
+                    }
+                    list[0].add(station.text());
+                    return lineNumberString;
+                }).forEach(key -> allStations.put(key, list[0]));
+        addStation(allStations);
+        return allStations;
+    }
+
+    private static Map addMCK(Document page){
+        Element element = page.select("tbody").get(5);
+        Map<String, List<String>> mono = new LinkedHashMap<>();
+        List<String> list = new ArrayList<>();
+        Elements tr = element.select("tr");
+        tr.stream().filter(element1 -> element1 != tr.get(1))
+                .map(el -> {
+                    String lineNumberString;
+                        Element lineNumber = el.select("span").get(0);
+                        Element station = el.select("a").get(1);
+                        lineNumberString = lineNumber.text();
+                        list.add(station.text());
+                        return lineNumberString;
+                }).forEach(key -> mono.put(key, list));
+        return mono;
+    }
+    private static Map addMono(Document page){
+        Element element = page.select("tbody").get(4);
+        Map<String, List<String>> mono = new LinkedHashMap<>();
+        List<String> list = new ArrayList<>();
+        Elements tr = element.select("tr").next().next();
+
+        tr.stream()
+                .map(el -> {
+                    String lineNumberString;
+                    Element lineNumber = el.select("span").get(0);
+                    Element station = el.select("a").get(1);
+                    lineNumberString = lineNumber.text();
+                    list.add(station.text());
+                    return lineNumberString;
+                }).forEach(key -> mono.put(key, list));
+        return mono;
+    }
 }
-
-
-
