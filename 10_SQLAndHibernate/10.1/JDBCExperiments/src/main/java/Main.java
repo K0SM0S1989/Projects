@@ -6,19 +6,18 @@ public class Main {
         String user = "root";
         String pass = "";//Пароль не хотелось бы светить ибо он у меня много где используется
 
-        String sqlCode = "select Courses.name, " +
-                "count(Subscriptions.course_id)/(select ((select dayofyear(subscription_date)" +
-                " from Subscriptions order by subscription_date desc limit 1)" +
-                "-(select dayofyear(subscription_date) from Subscriptions order by subscription_date limit 1))/30) as average_per_month" +
-                " from Courses" +
-                " join Subscriptions on Courses.id = Subscriptions.course_id group by Courses.name;";
-        try(Connection connection = DriverManager.getConnection(url, user, pass);
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sqlCode)) {
-                        while (resultSet.next()){
+        String sqlCode = "select course_name as name, " +
+                "count(student_name)/timestampdiff(month," +
+                "(select subscription_date from Purchaselist order by subscription_date limit 1), " +
+                "(select subscription_date from Purchaselist order by subscription_date desc limit 1))" +
+                " as average_per_month from Purchaselist group by course_name";
+        try (Connection connection = DriverManager.getConnection(url, user, pass);
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sqlCode)) {
+            while (resultSet.next()) {
                 String nameColumn = resultSet.getString("name");
                 String averageColumn = resultSet.getString("average_per_month");
-                System.out.println(nameColumn+" - "+averageColumn);
+                System.out.println(nameColumn + " - " + averageColumn);
             }
 
         } catch (SQLException e) {
