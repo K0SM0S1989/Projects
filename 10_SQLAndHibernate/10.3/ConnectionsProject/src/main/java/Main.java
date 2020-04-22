@@ -5,7 +5,7 @@ import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-
+import java.util.Date;
 import java.util.List;
 
 
@@ -18,34 +18,47 @@ public class Main {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
 
-            Course course = session.get(Course.class, 10);
-            Student student = session.get(Student.class, 1);
-            Teacher teacher = session.get(Teacher.class, 10);
+//            Teacher teacher = new Teacher();
+//            teacher.setName("Северус Снейп");
+//            teacher.setSalary(150000);
+//            teacher.setAge(35);
+//            session.save(teacher);
 
-            System.out.println("==========================");
-            PurchaseList purchaseList = session.get(PurchaseList.class, new PurchaseList(student.getName(), course.getName()).getId());
+//            Course course = new Course();
+//            course.setName("Зельеварение");
+//            course.setType(CourseType.PROGRAMMING);
+//            course.setTeacher(teacher);
+//            course.setDuration(30);
+//            course.setPrice(236000);
+//            course.setPricePerHour(course.getPrice()/course.getDuration());
+//            session.save(course);
 
-            try {
-                System.out.println(purchaseList.getPrice() + " - " + purchaseList.getSubscriptionDate() + " - " + student.getName());
+//            Student student = new Student();
+//            student.setName("Невилл Долгопупс");
+//            student.setAge(18);
+//            student.setRegistrationDate(new Date());
+//            session.save(student);
 
-            }catch (NullPointerException ex){
-                System.out.println("Студент не подписан на выбранный курс");
-            }
+//            Course course = session.get(Course.class, 48);
+//            Student student = session.get(Student.class, 101);
+//
+//            Subscription subscription = new Subscription();
+//            subscription.setId(new Subscription.Id(course, student));
+//            subscription.setSubscriptionDate(new Date());
+//            session.save(subscription);
+            Course course = session.get(Course.class, 48);
+            Student student = session.get(Student.class, 101);
+            Teacher teacher = session.get(Teacher.class, 51);
 
-            System.out.println("==========================");
-
+            System.out.println("------------------------");
             List<Course> courses = teacher.getCourses();
-            courses.forEach(s -> System.out.println(s.getName() + " - " + teacher.getName()));
-
-            System.out.println("==========================");
-
-            List<Subscription> subsStud = student.getSubscriptions();
-            subsStud.forEach(s -> System.out.println(s.getCourse().getName() + " - " + student.getName() + " - " + s.getSubscriptionDate()));
-
-            System.out.println("==========================");
-
-            List<Subscription> subsCour = course.getSubscriptions();
-            subsCour.forEach(s -> System.out.println(s.getStudent().getName() + " - " + course.getName() + " - " + s.getSubscriptionDate()));
+            courses.forEach(s-> System.out.println(s.getName()+" - "+s.getTeacher().getName()));
+            System.out.println("------------------------");
+            List<Subscription> subscriptions = student.getSubscriptions();
+            subscriptions.forEach(s-> System.out.println(student.getName()+" - "+s.getId().getCourse().getName()+" - "+s.getSubscriptionDate()));
+            System.out.println("------------------------");
+            List<Subscription> subscriptions1 = course.getSubscriptions();
+            subscriptions.forEach(s-> System.out.println(course.getName()+" - "+s.getId().getStudent().getName()+" - "+s.getSubscriptionDate()));
 
 
             transaction.commit();

@@ -10,35 +10,47 @@ public class Subscription {
 
 
     @Embeddable
-    private static class Id implements Serializable {
+    public static class Id implements Serializable {
+        @ManyToOne
+        @JoinColumn(name = "course_id")
+        private Course course;
 
-        @Column(name = "student_id")
-        private Integer studentId;
+        @ManyToOne
+        @JoinColumn(name = "student_id")
+        private Student student;
 
-        @Column(name = "course_id")
-        private Integer courseId;
+//        @Column(name = "student_id")
+//        private Integer studentId;
+//
+//        @Column(name = "course_id")
+//        private Integer courseId;
 
-        Id() {
+
+        public Id() {
         }
 
-        public Id(Integer studentId, Integer courseId) {
-            this.studentId = studentId;
-            this.courseId = courseId;
+        public Id(Course course, Student student) {
+            this.course = course;
+            this.student = student;
         }
 
-        public boolean equals(Object o) {
-            if (o != null && o instanceof Id) {
-                Id that = (Id) o;
-                return this.studentId.equals(that.studentId)
-                        && this.courseId.equals(that.courseId);
-            }
-            return false;
+        public Course getCourse() {
+            return course;
         }
 
-        public int hashCode() {
-            return studentId.hashCode() + courseId.hashCode();
-
+        public void setCourse(Course course) {
+            this.course = course;
         }
+
+        public Student getStudent() {
+            return student;
+        }
+
+        public void setStudent(Student student) {
+            this.student = student;
+        }
+
+
     }
 
     @EmbeddedId
@@ -48,13 +60,7 @@ public class Subscription {
     @NotNull
     private Date subscriptionDate;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id", insertable = false, updatable = false)
-    private Course course;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id", insertable = false, updatable = false)
-    private Student student;
 
 
     public Date getSubscriptionDate() {
@@ -65,19 +71,13 @@ public class Subscription {
         this.subscriptionDate = subscriptionDate;
     }
 
-    public Course getCourse() {
-        return course;
+    public Id getId() {
+        return id;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setId(Id id) {
+        this.id = id;
     }
 
-    public Student getStudent() {
-        return student;
-    }
 
-    public void setStudent(Student student) {
-        this.student = student;
-    }
 }

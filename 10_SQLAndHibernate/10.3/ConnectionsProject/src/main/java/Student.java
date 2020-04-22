@@ -19,11 +19,18 @@ public class Student {
     private Date registrationDate;
 
 
-    @OneToMany(targetEntity = Subscription.class, mappedBy = "student")
-    @Basic(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.student")
     private List<Subscription> subscriptions = new ArrayList<>();
 
+    public void addSubscriptions(Subscription subscription) {
+        subscriptions.add(subscription);
+        subscription.getId().setStudent(this);
+    }
 
+    public void removeSubscription(Subscription subscription) {
+        subscriptions.remove(subscription);
+        subscription.getId().setStudent(null);
+    }
     public Date getRegistrationDate() {
         return registrationDate;
     }
@@ -61,9 +68,7 @@ public class Student {
         return subscriptions;
     }
 
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
+
 
 
 }

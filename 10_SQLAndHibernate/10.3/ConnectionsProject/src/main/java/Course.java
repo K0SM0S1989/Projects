@@ -34,10 +34,18 @@ public class Course {
     private float pricePerHour;
 
 
-    @OneToMany(targetEntity = Subscription.class, mappedBy = "course")
-    @Basic(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.course")
     private List<Subscription> subscriptions = new ArrayList<>();
 
+    public void addSubscriptions(Subscription subscription) {
+        subscriptions.add(subscription);
+        subscription.getId().setCourse(this);
+    }
+
+    public void removeSubscription(Subscription subscription) {
+        subscriptions.remove(subscription);
+        subscription.getId().setCourse(null);
+    }
 
     public int getId() {
         return id;
@@ -116,9 +124,7 @@ public class Course {
         return subscriptions;
     }
 
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
+
 
 
 }
