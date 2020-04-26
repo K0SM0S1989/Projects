@@ -1,5 +1,6 @@
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -60,6 +61,11 @@ public class LinkedPurchaseList {
     @EmbeddedId
     private Id id = new Id();
 
+    private int price;
+
+    @Column(name = "subscription_date")
+    private Date subscriptionDate;
+
     public Id getId() {
         return id;
     }
@@ -68,10 +74,28 @@ public class LinkedPurchaseList {
         this.id = id;
     }
 
-    public LinkedPurchaseList(Id id) {
+    public LinkedPurchaseList(Id id, int price, Date subscriptionDate) {
         this.id = id;
+        this.price = price;
+        this.subscriptionDate = subscriptionDate;
     }
 
     public LinkedPurchaseList() {
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public Date getSubscriptionDate() {
+        return subscriptionDate;
+    }
+
+    public void setSubscriptionDate(Date subscriptionDate) {
+        this.subscriptionDate = subscriptionDate;
     }
 }

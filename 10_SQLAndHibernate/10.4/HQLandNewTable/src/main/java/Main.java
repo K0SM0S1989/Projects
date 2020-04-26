@@ -1,3 +1,4 @@
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -24,9 +25,6 @@ public class Main {
             Session session = sessionFactory.openSession();
             Transaction transaction = session.beginTransaction();
 
-            Query purch = session.createQuery("from PurchaseList");
-            List<PurchaseList> purchaseLists = purch.getResultList();
-
             Query course = session.createQuery("from Course");
             List<Course> courseList = course.getResultList();
 
@@ -36,10 +34,15 @@ public class Main {
             Query link = session.createQuery("from " + LinkedPurchaseList.class.getSimpleName());
             List<LinkedPurchaseList> linkedPurchaseLists = link.getResultList();
 
-            purchaseLists.forEach(s -> {
+            SQLQuery query = session.createSQLQuery("select student_name, course_name, price, subscription_date from Purchaselist");
+            List<Object[]> purchaseLists = query.list();
 
-                String stCourse = s.getId().getCourseName();
-                String stStud = s.getId().getStudentName();
+            purchaseLists.forEach(s -> {
+                String stStud = s[0].toString();
+                String stCourse = s[1].toString();
+                int intPrice = (int) s[2];
+                Date subscriptionDate = (Date) s[3];
+
                 int j = 0;
                 int k = 0;
                 for (int i = 0; i < studentList.size(); i++) {
@@ -54,11 +57,14 @@ public class Main {
                         break;
                     }
                 }
-                LinkedPurchaseList linkedPurchaseList = new LinkedPurchaseList(new LinkedPurchaseList.Id(j, k));
+                LinkedPurchaseList linkedPurchaseList = new LinkedPurchaseList(new LinkedPurchaseList.Id(j, k), intPrice, subscriptionDate);
                 session.save(linkedPurchaseList);
                 linkedPurchaseLists.add(linkedPurchaseList);
 
             });
+
+            linkedPurchaseLists.forEach(s -> System.out.println(s.getId().getStudentId() + " - " +
+                    s.getId().getCourseId() + " - " + s.getPrice() + " - " + s.getSubscriptionDate()));
 
             transaction.commit();
 
