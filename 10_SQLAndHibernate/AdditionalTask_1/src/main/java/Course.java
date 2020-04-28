@@ -1,6 +1,8 @@
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Courses")
@@ -22,7 +24,6 @@ public class Course {
     private String description;
 
 
-
     @Column(name = "students_count", nullable = true)
     private Integer studentsCount;
 
@@ -32,27 +33,28 @@ public class Course {
     private float pricePerHour;
 
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "Courses_teachers", joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "teacher_id"))
+    @OrderColumn
+    private Set<Teacher> teachers = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, targetEntity = CoursesTeachers.class,mappedBy = "id.course")
-    private List<CoursesTeachers> coursesTeachersList = new ArrayList<>();
-
-    public List<CoursesTeachers> getCoursesTeachersList() {
-        return coursesTeachersList;
+    public Set<Teacher> getTeachers() {
+        return teachers;
     }
 
-    public void addcoursesTeachers(CoursesTeachers coursesTeachers) {
-        coursesTeachersList.add(coursesTeachers);
-        coursesTeachers.getId().setCourse(this);
+    public void addTeacher(Teacher teacher) {
+        teachers.add(teacher);
+        teacher.getCourses().add(this);
     }
 
-    public void removecoursesTeachersList(CoursesTeachers coursesTeachers) {
-        coursesTeachersList.remove(coursesTeachers);
-        coursesTeachers.getId().setCourse(null);
+    public void removeTag(Teacher teacher) {
+        teachers.remove(teacher);
+        teacher.getCourses().remove(this);
     }
 
 
-
-    @OneToMany(fetch = FetchType.LAZY,targetEntity = Subscription.class, mappedBy = "id.course")
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Subscription.class, mappedBy = "id.course")
     private List<Subscription> subscriptions = new ArrayList<>();
 
     public void addSubscriptions(Subscription subscription) {
@@ -133,8 +135,6 @@ public class Course {
     public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
-
-
 
 
 }

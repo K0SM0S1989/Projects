@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
 import javax.management.Query;
 import java.util.List;
+import java.util.Set;
 
 
 public class Main {
@@ -21,14 +22,16 @@ public class Main {
 
 
             Teacher teacher = session.get(Teacher.class, 10);
-            List<CoursesTeachers> CTFromTeacherClass = teacher.getCoursesTeachersList();
+            Set<Course> coursesList = teacher.getCourses();
             Course course = session.get(Course.class, 10);
-            List<CoursesTeachers> CTFromCourseClass = course.getCoursesTeachersList();
-            CTFromCourseClass.forEach(s -> System.out.println(s.getId().getCourse().getName() + " - " + s.getId().getTeacher().getName()));
+            Set<Teacher> teachersList = course.getTeachers();
+
+
+            teachersList.forEach(s -> System.out.println(s.getName() + " - " + course.getName()));
 
             System.out.println("--------------------------");
 
-            CTFromTeacherClass.forEach(s-> System.out.println(s.getId().getCourse().getName()+" - "+s.getId().getTeacher().getName()));
+            coursesList.forEach(s -> System.out.println(s.getName() + " - " + teacher.getName()));
 
             transaction.commit();
 

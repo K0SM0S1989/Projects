@@ -1,5 +1,8 @@
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -15,23 +18,23 @@ public class Teacher {
 
     private int age;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "id.teacher")
-    private List<CoursesTeachers> coursesTeachersList;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "teachers")
+    private Set<Course> courses = new HashSet<>();
 
-    public List<CoursesTeachers> getCoursesTeachersList() {
-        return coursesTeachersList;
+    public Set<Course> getCourses() {
+        return courses;
     }
 
-    public void addcoursesTeachers(CoursesTeachers coursesTeachers) {
-        coursesTeachersList.add(coursesTeachers);
-        coursesTeachers.getId().setTeacher(this);
+
+    public void addTeacher(Course course) {
+        courses.add(course);
+        course.getTeachers().add(this);
     }
 
-    public void removecoursesTeachersList(CoursesTeachers coursesTeachers) {
-        coursesTeachersList.remove(coursesTeachers);
-        coursesTeachers.getId().setTeacher(null);
+    public void removeTag(Course course) {
+        courses.remove(course);
+        course.getTeachers().remove(this);
     }
-
 
     public int getId() {
         return id;
@@ -64,14 +67,6 @@ public class Teacher {
     public void setAge(int age) {
         this.age = age;
     }
-
-//    public List<Course> getCourses() {
-//        return courses;
-//    }
-//
-//    public void setCourses(List<Course> courses) {
-//        this.courses = courses;
-//    }
 
 
 }
