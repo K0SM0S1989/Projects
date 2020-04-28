@@ -1,8 +1,5 @@
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "Courses")
@@ -24,7 +21,7 @@ public class Course {
     private String description;
 
 
-    @Column(name = "students_count", nullable = true)
+    @Column(name = "students_count")
     private Integer studentsCount;
 
     private Integer price;
@@ -137,4 +134,24 @@ public class Course {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Course course = (Course) o;
+        return duration == course.duration &&
+                Float.compare(course.pricePerHour, pricePerHour) == 0 &&
+                Objects.equals(id, course.id) &&
+                Objects.equals(name, course.name) &&
+                type == course.type &&
+                Objects.equals(description, course.description) &&
+                Objects.equals(studentsCount, course.studentsCount) &&
+                Objects.equals(price, course.price) &&
+                Objects.equals(subscriptions, course.subscriptions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, duration, type, description, studentsCount, price, pricePerHour, subscriptions);
+    }
 }
