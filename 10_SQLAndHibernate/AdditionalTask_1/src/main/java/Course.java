@@ -139,19 +139,12 @@ public class Course {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Course course = (Course) o;
-        return duration == course.duration &&
-                Float.compare(course.pricePerHour, pricePerHour) == 0 &&
-                Objects.equals(id, course.id) &&
-                Objects.equals(name, course.name) &&
-                type == course.type &&
-                Objects.equals(description, course.description) &&
-                Objects.equals(studentsCount, course.studentsCount) &&
-                Objects.equals(price, course.price) &&
-                Objects.equals(subscriptions, course.subscriptions);
+        return Objects.equals(name, course.name) &&
+                type == course.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, duration, type, description, studentsCount, price, pricePerHour, subscriptions);
+        return Objects.hash(name, type);
     }
 }

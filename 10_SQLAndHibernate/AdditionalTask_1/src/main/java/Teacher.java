@@ -70,8 +70,7 @@ public class Teacher {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Teacher teacher = (Teacher) o;
-        return id == teacher.id &&
-                salary == teacher.salary &&
+        return salary == teacher.salary &&
                 age == teacher.age &&
                 Objects.equals(name, teacher.name);
     }
@@ -79,6 +78,6 @@ public class Teacher {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, name, salary, age);
+        return Objects.hash(name, salary, age);
     }
 }
