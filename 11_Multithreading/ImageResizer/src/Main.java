@@ -1,13 +1,10 @@
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
+
 import java.io.File;
 
-public class Main
-{
-    public static void main(String[] args)
-    {
-        String srcFolder = "/users/sortedmap/Desktop/src";
-        String dstFolder = "/users/sortedmap/Desktop/dst";
+public class Main {
+    public static void main(String[] args) {
+        String srcFolder = args[0];
+        String dstFolder = args[1];
 
         File srcDir = new File(srcFolder);
 
@@ -15,42 +12,26 @@ public class Main
 
         File[] files = srcDir.listFiles();
 
-        try
-        {
-            for(File file : files)
-            {
-                BufferedImage image = ImageIO.read(file);
-                if(image == null) {
-                    continue;
-                }
+        int processors = Runtime.getRuntime().availableProcessors();
+        assert files != null;
+        int delta = (int) Math.ceil(files.length / processors);
+        Thread[] newThread = new Thread[processors];
 
-                int newWidth = 300;
-                int newHeight = (int) Math.round(
-                        image.getHeight() / (image.getWidth() / (double) newWidth)
-                );
-                BufferedImage newImage = new BufferedImage(
-                        newWidth, newHeight, BufferedImage.TYPE_INT_RGB
-                );
+        File[][] filesForNewThread = new File[processors][delta];
 
-                int widthStep = image.getWidth() / newWidth;
-                int heightStep = image.getHeight() / newHeight;
+        for (int i = 0; i < processors; i++) {
 
-                for (int x = 0; x < newWidth; x++)
-                {
-                    for (int y = 0; y < newHeight; y++) {
-                        int rgb = image.getRGB(x * widthStep, y * heightStep);
-                        newImage.setRGB(x, y, rgb);
-                    }
-                }
-
-                File newFile = new File(dstFolder + "/" + file.getName());
-                ImageIO.write(newImage, "jpg", newFile);
+            if (i == (processors - 1)) {
+                filesForNewThread[i] = new File[delta + (files.length % processors)];
             }
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
+
+            System.arraycopy(files, i * (delta), filesForNewThread[i], 0, filesForNewThread[i].length);
+            newThread[i] = new ImageResizer(dstFolder, filesForNewThread[i]);
+            newThread[i].start();
         }
 
         System.out.println("Duration: " + (System.currentTimeMillis() - start));
     }
+
+
 }
