@@ -25,9 +25,12 @@ public class ImageResizer extends Thread {
                 int newHeight = (int) Math.round(
                         image.getHeight() / (image.getWidth() / (double) newWidth));
 
+                int point = file.toString().lastIndexOf('.')+1;
+                String fileFormat = file.toString().substring(point);
+
 
                 File newFile = new File(dstFolder + "/" + file.getName());
-                ImageIO.write(scale(image, newWidth, newHeight), "jpg", newFile);
+                ImageIO.write(scale(image, newWidth, newHeight), fileFormat, newFile);
             }
         } catch (Exception e) {
             e.printStackTrace();
