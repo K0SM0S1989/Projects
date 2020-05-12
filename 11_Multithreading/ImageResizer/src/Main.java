@@ -28,13 +28,11 @@ public class Main {
             System.arraycopy(files, i * (delta), filesForNewThread[i], 0, filesForNewThread[i].length);
             newThread[i] = new ImageResizer(dstFolder, filesForNewThread[i]);
             newThread[i].start();
-
-                try {
-                    newThread[i].join();
-                }catch (InterruptedException ex){}
-
-
-
+        }
+        for (Thread oneThread : newThread){
+            try {
+                oneThread.join();
+            }catch (InterruptedException ex){}
         }
 
 
