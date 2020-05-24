@@ -21,29 +21,34 @@ public class Bank {
      * метод isFraud. Если возвращается true, то делается блокировка
      * счетов (как – на ваше усмотрение)
      */
-    public synchronized void transfer(String fromAccountNum, String toAccountNum, long amount) {
-        if (accounts.containsKey(fromAccountNum) && accounts.containsKey(toAccountNum)){
-            if (amount > 50000) {
-                try {
-                    if (isFraud(fromAccountNum, toAccountNum, amount)) {
-                        blockAccounts.put(fromAccountNum, accounts.get(fromAccountNum));
-                        blockAccounts.put(toAccountNum, accounts.get(toAccountNum));
-                        accounts.remove(fromAccountNum);
-                        accounts.remove(toAccountNum);
-                        System.out.println("Счета заблокированы!");
+    public void transfer(String fromAccountNum, String toAccountNum, long amount) {
+        if (accounts.containsKey(fromAccountNum) && accounts.containsKey(toAccountNum) && accounts.get(fromAccountNum).getMoney() >= amount) {
 
-                    } else {
-                        accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
-                        accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+            synchronized (accounts.get(fromAccountNum).getAccNumber()
+                    .compareTo(accounts.get(toAccountNum)
+                            .getAccNumber()) > 0 ? accounts.get(fromAccountNum) : accounts.get(toAccountNum)) {
+                if (amount > 50000) {
+                    try {
+                        if (isFraud(fromAccountNum, toAccountNum, amount)) {
+                            blockAccounts.put(fromAccountNum, accounts.get(fromAccountNum));
+                            blockAccounts.put(toAccountNum, accounts.get(toAccountNum));
+                            accounts.remove(fromAccountNum);
+                            accounts.remove(toAccountNum);
+                            System.out.println("Счета заблокированы!");
+
+                        } else {
+                            accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
+                            accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                } else {
+                    accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
+                    accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
                 }
-            } else {
-                accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
-                accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
             }
-        }else {
+        } else {
             System.out.println("Транзакция невозможна");
         }
     }
@@ -51,13 +56,13 @@ public class Bank {
     /**
      * TODO: реализовать метод. Возвращает остаток на счёте.
      */
-    public synchronized long getBalance(String accountNum) {
-        if (accounts.containsKey(accountNum)){
-            return accounts.get(accountNum).getMoney();
-        } else return blockAccounts.get(accountNum).getMoney();
-
+    public long getBalance(String accountNum) {
+        synchronized (accountNum) {
+            if (accounts.containsKey(accountNum)) {
+                return accounts.get(accountNum).getMoney();
+            } else return blockAccounts.get(accountNum).getMoney();
+        }
     }
-
 
 
     public HashMap<String, Account> getAccounts() {
