@@ -1,5 +1,7 @@
 package test;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -23,8 +25,10 @@ public class Bank {
      * счетов (как – на ваше усмотрение)
      */
     public void transfer(String fromAccountNum, String toAccountNum, long amount) {
-        synchronized (accounts.get(fromAccountNum).compareTo(accounts.get(toAccountNum)) < 0 ? accounts.get(fromAccountNum) : accounts.get(toAccountNum)) {
-            synchronized (accounts.get(toAccountNum).compareTo(accounts.get(fromAccountNum)) < 0 ? accounts.get(toAccountNum) : accounts.get(fromAccountNum)) {
+        Account[] accArray = {accounts.get(fromAccountNum), accounts.get(toAccountNum)};
+        Arrays.sort(accArray);
+        synchronized (accArray[0]) {
+            synchronized (accArray[1]) {
                 if (!accounts.get(fromAccountNum).isBlockStatus() && !accounts.get(toAccountNum).isBlockStatus() && accounts.get(fromAccountNum).getMoney() >= amount) {
 
                     if (amount > 50000) {
