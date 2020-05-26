@@ -7,7 +7,6 @@ import java.util.Random;
 public class Bank {
 
     private HashMap<String, Account> accounts;
-    private HashMap<String, Account> blockAccounts = new HashMap<>();
     private final Random random = new Random();
 
     public synchronized boolean isFraud(String fromAccountNum, String toAccountNum, long amount)
@@ -24,34 +23,35 @@ public class Bank {
      * счетов (как – на ваше усмотрение)
      */
     public void transfer(String fromAccountNum, String toAccountNum, long amount) {
-        if (accounts.containsKey(fromAccountNum) && accounts.containsKey(toAccountNum) && accounts.get(fromAccountNum).getMoney() >= amount) {
+        synchronized (accounts.get(fromAccountNum).compareTo(accounts.get(toAccountNum)) < 0 ? accounts.get(fromAccountNum) : accounts.get(toAccountNum)) {
+            synchronized (accounts.get(toAccountNum).compareTo(accounts.get(fromAccountNum)) < 0 ? accounts.get(toAccountNum) : accounts.get(fromAccountNum)) {
+                if (!accounts.get(fromAccountNum).isBlockStatus() && !accounts.get(toAccountNum).isBlockStatus() && accounts.get(fromAccountNum).getMoney() >= amount) {
 
-            synchronized (accounts.get(fromAccountNum).getAccNumber()
-                    .compareTo(accounts.get(toAccountNum)
-                            .getAccNumber()) > 0 ? accounts.get(fromAccountNum) : accounts.get(toAccountNum)) {
-                if (amount > 50000) {
-                    try {
-                        if (isFraud(fromAccountNum, toAccountNum, amount)) {
-                            blockAccounts.put(fromAccountNum, accounts.get(fromAccountNum));
-                            blockAccounts.put(toAccountNum, accounts.get(toAccountNum));
-                            accounts.remove(fromAccountNum);
-                            accounts.remove(toAccountNum);
-                            System.out.println("Счета заблокированы!");
+                    if (amount > 50000) {
+                        try {
+                            if (isFraud(fromAccountNum, toAccountNum, amount)) {
 
-                        } else {
-                            accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
-                            accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+                                accounts.get(fromAccountNum).setBlockStatus(true);
+                                accounts.get(toAccountNum).setBlockStatus(true);
+                                System.out.println("Счета заблокированы!");
+
+                            } else {
+                                accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
+                                accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    } else {
+                        accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
+                        accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
                     }
+
                 } else {
-                    accounts.get(fromAccountNum).setMoney(accounts.get(fromAccountNum).getMoney() - amount);
-                    accounts.get(toAccountNum).setMoney(accounts.get(toAccountNum).getMoney() + amount);
+
+                    System.out.println("Транзакция невозможна");
                 }
             }
-        } else {
-            System.out.println("Транзакция невозможна");
         }
     }
 
@@ -60,9 +60,7 @@ public class Bank {
      */
     public long getBalance(String accountNum) {
         synchronized (accountNum) {
-            if (accounts.containsKey(accountNum)) {
-                return accounts.get(accountNum).getMoney();
-            } else return blockAccounts.get(accountNum).getMoney();
+            return accounts.get(accountNum).getMoney();
         }
     }
 
@@ -74,9 +72,5 @@ public class Bank {
     public void setAccounts(HashMap<String, Account> accounts) {
 
         this.accounts = accounts;
-    }
-
-    HashMap<String, Account> getBlockAccounts() {
-        return blockAccounts;
     }
 }

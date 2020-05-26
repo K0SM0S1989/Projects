@@ -1,12 +1,14 @@
 package test;
 
-public class Account {
+public class Account implements Comparable<Account>{
     private long money;
     private String accNumber;
+    private boolean blockStatus;
 
-    public Account(long money, String accNumber) {
+    public Account(long money, String accNumber, boolean blockStatus) {
         this.money = money;
         this.accNumber = accNumber;
+        this.blockStatus = blockStatus;
     }
 
     public Account() {
@@ -28,5 +30,16 @@ public class Account {
         this.accNumber = accNumber;
     }
 
+    public boolean isBlockStatus() {
+        return blockStatus;
+    }
 
+    public void setBlockStatus(boolean blockStatus) {
+        this.blockStatus = blockStatus;
+    }
+
+    @Override
+    public int compareTo(Account o) {
+        return this.getAccNumber().compareTo(o.getAccNumber());
+    }
 }
