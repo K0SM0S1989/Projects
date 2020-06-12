@@ -1,90 +1,92 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import java.util.List;
-import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.RecursiveAction;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.Thread.sleep;
 
-public class PageJoinSaveFiles extends RecursiveTask<String> {
+class PageJoinSaveFiles extends RecursiveAction {
+    private final String adress;
+    private final String newUri;
+    private final CopyOnWriteArrayList<String> result;
+    private final CopyOnWriteArrayList<String> treeResult;
+    private String table = "\t";
 
-    String peripheryPage;
-    String namePageString;
-    List<String> stringList;
-    String table;
 
-
-    public PageJoinSaveFiles(String peripheryPage, List<String> stringList, String table) {
-        this.peripheryPage = peripheryPage;
-        this.stringList = stringList;
-        this.table = table;
+    public PageJoinSaveFiles(String adress, String newUri, CopyOnWriteArrayList<String> result, String table, CopyOnWriteArrayList<String> treeResult) {
+        this.adress = adress;
+        this.result = result;
+        this.newUri = newUri;
+        this.table += table;
+        this.treeResult = treeResult;
     }
 
     @Override
-    protected String compute() {
+    protected void compute() {
+
         try {
             sleep(150);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        return table + searchUri(peripheryPage, stringList);
+        parsing();
     }
 
-
-    String searchUri(String uriSimple, List<String> stringList) {
-        namePageString = uriSimple;
-        String adress = "https://lenta.ru";
-        char firstSymbol = '/';
-        List<String> uriListForThisMethod = new ArrayList<>();
-        List<String> juniorChildList = new ArrayList<>();
-        Document document = null;
+    private List<String> parsing() {
+        Pattern pattern = Pattern.compile(adress);
+        List<String> newUriList = new ArrayList<>();
         try {
-            document = Jsoup.connect(uriSimple).get();
+            Document page = Jsoup.connect(newUri).get();
+
+            String link = page.select("link").first().attr("href");
+            Matcher outsideUri = pattern.matcher(link);
+
+            if (outsideUri.find()) {
+                Elements elements = page.select("a");
+                for (int i = 1; i < elements.size(); i++) {
+                    String href = elements.get(i).attr("href");
+
+
+                    Pattern p = Pattern.compile("/tags");
+                    Pattern pat = Pattern.compile("/parts");
+                    Matcher notFoundUri = pat.matcher(href);
+                    Matcher matcher = p.matcher(href);
+                    char firstSymbol = '/';
+                    if (href.length() >= 1 && href.charAt(0) == firstSymbol && !matcher.find() && !notFoundUri.find()) {
+
+                        if (!result.contains(adress.concat(href)) && !newUriList.contains(adress.concat(href))) {
+                            newUriList.add(adress.concat(href));
+                            result.add(adress.concat(href));
+                            treeResult.add(table + adress.concat(href));
+
+                        }
+
+                    }
+                }
+
+                List<PageJoinSaveFiles> tasklist = new ArrayList<>();
+                if (!newUriList.isEmpty()) {
+                    newUriList.forEach(s -> {
+
+                        PageJoinSaveFiles task = new PageJoinSaveFiles(adress, s, result, table, treeResult);
+                        tasklist.add((PageJoinSaveFiles) task.fork());
+                    });
+                    invokeAll(tasklist);
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Element thisMethodElement = document.select("nav.b-tags-list.js-tags").get(0);
-        Element divEl = thisMethodElement.select("div").get(3);
-        Elements elements = divEl.select("a");
-        for (int i = 1; i < elements.size(); i++) {
-            Element element = elements.get(i);
-            String href = element.attr("href");
-            if (!stringList.contains(adress.concat(href)) && href.charAt(0) == firstSymbol) {
-                uriListForThisMethod.add(adress.concat(href));
-            } else {
-                Elements junior = document.select("h4");
-                junior.forEach(j -> {
-                    Element aEl = j.select("a").get(0);
-                    String juniorHref = aEl.attr("href");
-                    if (juniorHref.charAt(0) == firstSymbol) {
-                        juniorChildList.add(adress.concat(juniorHref));
-                    }
-                });
-                break;
-            }
-        }
-        List<PageJoinSaveFiles> taskList = new ArrayList<>();
-        table += "\t";
-        if (juniorChildList.isEmpty()) {
-            uriListForThisMethod.forEach(s -> {
-                PageJoinSaveFiles task = new PageJoinSaveFiles(s, uriListForThisMethod, table);
-                task.fork();
-                taskList.add(task);
-            });
-            taskList.forEach(task -> namePageString += "\n" + table + task.join());
-            return namePageString;
-
-        } else {
-            juniorChildList.forEach(string -> namePageString += "\n" + table + table + string);
-            return namePageString;
-        }
-
+        return newUriList;
     }
-
 }
+

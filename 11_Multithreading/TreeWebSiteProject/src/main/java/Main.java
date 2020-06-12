@@ -2,29 +2,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ForkJoinPool;
 
 public class Main {
 
+    private static final String adress = "https://lenta.ru";
 
     public static void main(String[] args) {
 
         Path txtFile = Paths.get("map.txt");
-        List<String> nameChildPage = RootPage.go();
-        String adress = "https://lenta.ru";
-
-        String table = "\t";
-        //System.out.println(adress);
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add(adress);
-        nameChildPage.forEach(child -> {
-            strings.add(new ForkJoinPool().invoke(new PageJoinSaveFiles(child, nameChildPage, table)));
-//            System.out.println(new ForkJoinPool().invoke(new PageJoinSaveFiles(child, nameChildPage, table)));
-        });
+        CopyOnWriteArrayList<String> result = new CopyOnWriteArrayList();
+        CopyOnWriteArrayList<String> treeResult = new CopyOnWriteArrayList();
+        treeResult.add(adress);
+        new ForkJoinPool().invoke(new PageJoinSaveFiles(adress, adress, result, "", treeResult));
+        System.out.println(result.size());
         try {
-            Files.write(txtFile, strings);
+            Files.write(txtFile, treeResult);
         } catch (IOException e) {
             e.printStackTrace();
         }
