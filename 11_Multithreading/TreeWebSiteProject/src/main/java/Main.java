@@ -16,7 +16,7 @@ public class Main {
         CopyOnWriteArrayList<String> treeResult = new CopyOnWriteArrayList();
         treeResult.add(adress);
         new ForkJoinPool().invoke(new PageJoinSaveFiles(adress, adress, result, "", treeResult));
-        System.out.println(result.size());
+        
         try {
             Files.write(txtFile, treeResult);
         } catch (IOException e) {
@@ -27,6 +27,3 @@ public class Main {
     }
 
 }
-
-
-

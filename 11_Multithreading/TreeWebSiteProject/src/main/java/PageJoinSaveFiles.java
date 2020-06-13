@@ -37,10 +37,11 @@ class PageJoinSaveFiles extends RecursiveAction {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        treeResult.add(table + newUri);
         parsing();
     }
 
-    private List<String> parsing() {
+    private void parsing() {
         Pattern pattern = Pattern.compile(adress);
         List<String> newUriList = new ArrayList<>();
         try {
@@ -65,7 +66,7 @@ class PageJoinSaveFiles extends RecursiveAction {
                         if (!result.contains(adress.concat(href)) && !newUriList.contains(adress.concat(href))) {
                             newUriList.add(adress.concat(href));
                             result.add(adress.concat(href));
-                            treeResult.add(table + adress.concat(href));
+                          //  treeResult.add(table + adress.concat(href));
 
                         }
 
@@ -86,7 +87,6 @@ class PageJoinSaveFiles extends RecursiveAction {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return newUriList;
+
     }
 }
-
