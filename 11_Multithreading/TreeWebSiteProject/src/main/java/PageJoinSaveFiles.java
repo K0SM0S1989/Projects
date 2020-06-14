@@ -5,6 +5,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.RecursiveAction;
 
@@ -16,28 +17,32 @@ import static java.lang.Thread.sleep;
 class PageJoinSaveFiles extends RecursiveAction {
     private final String adress;
     private final String newUri;
-    private final CopyOnWriteArrayList<String> result;
-    private final CopyOnWriteArrayList<String> treeResult;
-    private String table = "\t";
+    private final ConcurrentSkipListSet<String> result;
+    private final ConcurrentSkipListSet<String> treeResult;
+    private String indentSymbol = "\t";
+    private String tagsPageNotFound;
+    private String partsPageNotFound;
 
-
-    public PageJoinSaveFiles(String adress, String newUri, CopyOnWriteArrayList<String> result, String table, CopyOnWriteArrayList<String> treeResult) {
+    public PageJoinSaveFiles(String adress, String newUri,
+                             ConcurrentSkipListSet<String> result,
+                             String indentSymbol,
+                             ConcurrentSkipListSet<String> treeResult,
+                             String tagsPageNotFound,
+                             String partsPageNotFound) {
         this.adress = adress;
         this.result = result;
         this.newUri = newUri;
-        this.table += table;
+        this.indentSymbol += indentSymbol;
         this.treeResult = treeResult;
+        this.tagsPageNotFound = tagsPageNotFound;
+        this.partsPageNotFound = partsPageNotFound;
     }
 
     @Override
     protected void compute() {
 
-        try {
-            sleep(150);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        treeResult.add(table + newUri);
+
+        treeResult.add(indentSymbol + newUri);
         parsing();
     }
 
@@ -45,7 +50,13 @@ class PageJoinSaveFiles extends RecursiveAction {
         Pattern pattern = Pattern.compile(adress);
         List<String> newUriList = new ArrayList<>();
         try {
+
             Document page = Jsoup.connect(newUri).get();
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             String link = page.select("link").first().attr("href");
             Matcher outsideUri = pattern.matcher(link);
@@ -56,8 +67,8 @@ class PageJoinSaveFiles extends RecursiveAction {
                     String href = elements.get(i).attr("href");
 
 
-                    Pattern p = Pattern.compile("/tags");
-                    Pattern pat = Pattern.compile("/parts");
+                    Pattern p = Pattern.compile(tagsPageNotFound);
+                    Pattern pat = Pattern.compile(partsPageNotFound);
                     Matcher notFoundUri = pat.matcher(href);
                     Matcher matcher = p.matcher(href);
                     char firstSymbol = '/';
@@ -66,7 +77,6 @@ class PageJoinSaveFiles extends RecursiveAction {
                         if (!result.contains(adress.concat(href)) && !newUriList.contains(adress.concat(href))) {
                             newUriList.add(adress.concat(href));
                             result.add(adress.concat(href));
-                          //  treeResult.add(table + adress.concat(href));
 
                         }
 
@@ -75,9 +85,10 @@ class PageJoinSaveFiles extends RecursiveAction {
 
                 List<PageJoinSaveFiles> tasklist = new ArrayList<>();
                 if (!newUriList.isEmpty()) {
+
                     newUriList.forEach(s -> {
 
-                        PageJoinSaveFiles task = new PageJoinSaveFiles(adress, s, result, table, treeResult);
+                        PageJoinSaveFiles task = new PageJoinSaveFiles(adress, s, result, indentSymbol, treeResult, tagsPageNotFound, partsPageNotFound);
                         tasklist.add((PageJoinSaveFiles) task.fork());
                     });
                     invokeAll(tasklist);
