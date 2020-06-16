@@ -21,7 +21,9 @@ public class Main {
         ConcurrentSkipListSet<String> result = new ConcurrentSkipListSet();
         ConcurrentSkipListSet<String> treeResult = new ConcurrentSkipListSet();
         treeResult.add(adress);
-        new ForkJoinPool().invoke(new PageJoinSaveFiles(adress, adress, result, "", treeResult, tagsPageNotFound, partsPageNotFound));
+        ForkJoinPool pool = new ForkJoinPool();
+        pool.invoke(new PageJoinSaveFiles(adress, adress, result, "", treeResult, tagsPageNotFound, partsPageNotFound));
+        pool.shutdown();
         ArrayList<String> treeList = new ArrayList<>(treeResult);
         Collections.reverse(treeList);
         try {
