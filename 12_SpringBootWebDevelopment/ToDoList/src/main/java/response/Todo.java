@@ -1,14 +1,24 @@
 package response;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Todo {
-    private int id;
+    private long id;
     private String todo;
 
-    public int getId() {
+    public Todo() {
+    }
+
+    public Todo(long id, String todo) {
+        this.id = id;
+        this.todo = todo;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

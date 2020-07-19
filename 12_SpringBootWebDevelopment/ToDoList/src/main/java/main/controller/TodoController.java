@@ -1,15 +1,21 @@
 package main.controller;
 
+import main.ApiError;
 import main.Storage;
+import main.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import response.Todo;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/api")
 public class TodoController {
+
+
 
     @GetMapping("/todo/")
     public List<Todo> list() {
@@ -17,35 +23,46 @@ public class TodoController {
     }
 
     @PostMapping("/todo/")
-    public int add(Todo todo) {
+    public long add(Todo todo) {
         return Storage.addTodo(todo);
     }
 
     @GetMapping("/todo/{id}")
-    public ResponseEntity get(@PathVariable int id) {
+
+    public Todo get(@PathVariable long id) throws EntityNotFoundException {
         Todo todo = Storage.getTodo(id);
         if (todo == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } else return new ResponseEntity(todo, HttpStatus.OK);
+            throw EntityNotFoundException.createWith(id);
+        }
+        return todo;
     }
 
     @DeleteMapping("/todo/{id}")
-    public ResponseEntity delete(@PathVariable int id) {
+    public String delete(@PathVariable long id) throws EntityNotFoundException {
         Todo todo = Storage.getTodo(id);
         if (todo == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } else return new ResponseEntity(Storage.deleteTodo(id), HttpStatus.OK);
+            throw EntityNotFoundException.createWith(id);// return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return Storage.deleteTodo(id);
     }
 
     @PutMapping("/todo/{id}")
-    public ResponseEntity update(@PathVariable int id, Todo todo) {
-        if (Storage.updateTodo(id, todo) != null){
-            return new ResponseEntity(Storage.updateTodo(id, todo),HttpStatus.OK);
-        }else return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+    public String update(@PathVariable long id, Todo todo) throws EntityNotFoundException {
+        if (Storage.updateTodo(id, todo) == null) {
+            throw EntityNotFoundException.createWith(id);
+        }
+        return Storage.updateTodo(id, todo);
     }
 
     @DeleteMapping("/todo/")
     public String deleteAll() {
         return Storage.deleteAllTodo();
+    }
+
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiError> handleContentNotAllowedException(EntityNotFoundException unfe) {
+        List<String> errors = Collections.singletonList(unfe.getMessage());
+        return new ResponseEntity<>(new ApiError(errors), HttpStatus.NOT_FOUND);
     }
 }
