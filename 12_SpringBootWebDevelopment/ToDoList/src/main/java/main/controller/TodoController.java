@@ -16,7 +16,6 @@ import java.util.List;
 public class TodoController {
 
 
-
     @GetMapping("/todo/")
     public List<Todo> list() {
         return Storage.allTodo();
@@ -28,11 +27,10 @@ public class TodoController {
     }
 
     @GetMapping("/todo/{id}")
-
     public Todo get(@PathVariable long id) throws EntityNotFoundException {
         Todo todo = Storage.getTodo(id);
         if (todo == null) {
-            throw EntityNotFoundException.createWith(id);
+            throw EntityNotFoundException.createWith(id,"");
         }
         return todo;
     }
@@ -41,7 +39,7 @@ public class TodoController {
     public String delete(@PathVariable long id) throws EntityNotFoundException {
         Todo todo = Storage.getTodo(id);
         if (todo == null) {
-            throw EntityNotFoundException.createWith(id);// return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            throw EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено");
         }
         return Storage.deleteTodo(id);
     }
@@ -49,7 +47,7 @@ public class TodoController {
     @PutMapping("/todo/{id}")
     public String update(@PathVariable long id, Todo todo) throws EntityNotFoundException {
         if (Storage.updateTodo(id, todo) == null) {
-            throw EntityNotFoundException.createWith(id);
+            throw EntityNotFoundException.createWith(id, "");
         }
         return Storage.updateTodo(id, todo);
     }
@@ -60,9 +58,4 @@ public class TodoController {
     }
 
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ApiError> handleContentNotAllowedException(EntityNotFoundException unfe) {
-        List<String> errors = Collections.singletonList(unfe.getMessage());
-        return new ResponseEntity<>(new ApiError(errors), HttpStatus.NOT_FOUND);
-    }
 }

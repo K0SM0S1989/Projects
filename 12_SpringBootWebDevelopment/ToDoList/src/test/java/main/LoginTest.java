@@ -22,9 +22,6 @@ import response.Todo;
 @AutoConfigureMockMvc
 public abstract class LoginTest {
 
-
-
-
     @Autowired
     protected WebApplicationContext ctx;
 
@@ -32,17 +29,7 @@ public abstract class LoginTest {
     protected MockMvc mockMvc;
 
     @Autowired
-    protected MockMvc mockMvcId;
-
-    @Autowired
-    protected DefaultController controller;
-
-    @Autowired
-    protected TodoController todoController;
-
-    @Autowired
     protected ObjectMapper mapper;
-
 
     @Before
     public void setup() throws Exception {

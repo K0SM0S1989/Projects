@@ -1,19 +1,27 @@
 package main;
 
-import java.util.List;
-
 public class ApiError {
-    private List<String> errors;
+    private String message;
+    private int code;
 
-    public ApiError(List<String> errors) {
-        this.errors = errors;
+    public ApiError(String message, int code) {
+        this.message = message;
+        this.code = code;
     }
 
-    public List<String> getErrors() {
-        return errors;
+    public String getMessage() {
+        return message;
     }
 
-    public void setErrors(List<String> errors) {
-        this.errors = errors;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }
