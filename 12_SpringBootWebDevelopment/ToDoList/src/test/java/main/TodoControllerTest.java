@@ -48,7 +48,7 @@ public class TodoControllerTest extends LoginTest {
         this.mockMvc.perform(get("/api/todo/" + todo.getId()))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("{\"id\":" + id + ",\"todo\":\"some deal\"}")));
+                .andExpect(content().string(containsString(mapper.writeValueAsString(todo))));
     }
 
     @Test
