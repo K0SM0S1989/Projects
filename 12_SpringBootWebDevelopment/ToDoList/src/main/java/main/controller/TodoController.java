@@ -1,60 +1,76 @@
 package main.controller;
 
-import main.ApiError;
 import main.Storage;
 import main.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import response.Todo;
 
-import java.util.Collections;
+import main.repo.TodoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.web.bind.annotation.*;
+import main.models.Todo;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api")
 public class TodoController {
 
+    @Autowired
+    private TodoRepository todoRepository;
+
 
     @GetMapping("/todo/")
     public List<Todo> list() {
-        return Storage.allTodo();
+        Iterable<Todo> todoIterable = todoRepository.findAll();
+        List<Todo> todoList = new ArrayList<>();
+        for (Todo todo : todoIterable) {
+            todoList.add(todo);
+        }
+        return todoList;
     }
 
     @PostMapping("/todo/")
     public long add(Todo todo) {
-        return Storage.addTodo(todo);
+        Todo newTodo = todoRepository.save(todo);
+        return newTodo.getId();
     }
 
     @GetMapping("/todo/{id}")
     public Todo get(@PathVariable long id) throws EntityNotFoundException {
-        Todo todo = Storage.getTodo(id);
-        if (todo == null) {
-            throw EntityNotFoundException.createWith(id,"");
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
+        if (!optionalTodo.isPresent()) {
+            throw EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено");
         }
-        return todo;
+        return optionalTodo.get();
     }
 
     @DeleteMapping("/todo/{id}")
     public String delete(@PathVariable long id) throws EntityNotFoundException {
-        Todo todo = Storage.getTodo(id);
-        if (todo == null) {
+        Optional<Todo> optionalTodo = todoRepository.findById(id);
+        if (!optionalTodo.isPresent()) {
             throw EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено");
-        }
-        return Storage.deleteTodo(id);
+        } else todoRepository.deleteById(id);
+        return "Дело №" + id + " удалено из базы";
     }
 
     @PutMapping("/todo/{id}")
     public String update(@PathVariable long id, Todo todo) throws EntityNotFoundException {
-        if (Storage.updateTodo(id, todo) == null) {
-            throw EntityNotFoundException.createWith(id, "");
+        Optional<Todo> todoOptional = todoRepository.findById(id);
+        if (!todoOptional.isPresent()) {
+            throw EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено");
+        } else {
+            todoOptional.get().setTodoString(todo.getTodoString());
+            todoRepository.save(todoOptional.get());
         }
-        return Storage.updateTodo(id, todo);
+        return "Дело №" + id + " изменено";
     }
 
     @DeleteMapping("/todo/")
     public String deleteAll() {
-        return Storage.deleteAllTodo();
+        todoRepository.deleteAll();
+        return "База очищена";
     }
 
 
