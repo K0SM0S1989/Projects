@@ -1,9 +1,17 @@
 package main.controller;
 
 import main.EntityNotFoundException;
+import main.dto.TodoDTO;
+import main.mappers.TodoMapper;
 import main.models.Todo;
 import main.serv.TaskService;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -15,106 +23,38 @@ public class TodoController {
         this.taskService = taskService;
     }
 
-//
-//    final TodoRepository todoRepository;
-//
-//    public TodoController(TodoRepository todoRepository) {
-//        this.todoRepository = todoRepository;
-//    }
-//
-//
-//
-//    @GetMapping("/todo/")
-//    public Iterable<Todo> list() {
-//
-//        Iterable<Todo> todoIterable = todoRepository.findAll();
-//        return todoIterable;
-//    }
-//
-//    @PostMapping("/todo/")
-//    public long add(Todo todo) {
-//        Todo newTodo = todoRepository.save(todo);
-//        return newTodo.getId();
-//    }
-//
-//    @GetMapping("/todo/{id}")
-//    public Todo get(@PathVariable long id) throws EntityNotFoundException {
-//        Todo todo = todoRepository.findById(id).orElseThrow(() -> EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено"));
-//        return todo;
-//    }
-//
-//    @DeleteMapping("/todo/{id}")
-//    public String delete(@PathVariable long id) throws EntityNotFoundException {
-//        Optional<Todo> optionalTodo = todoRepository.findById(id);
-//        if (!optionalTodo.isPresent()) {
-//            throw EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено");
-//        } else todoRepository.deleteById(id);
-//        return "Дело №" + id + " удалено из базы";
-//    }
-//
-//    @PutMapping("/todo/{id}")
-//    public String update(@PathVariable long id, Todo todo) throws EntityNotFoundException {
-//        Optional<Todo> todoOptional = todoRepository.findById(id);
-//        if (!todoOptional.isPresent()) {
-//            throw EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено");
-//        } else {
-//            todoOptional.get().setTodoString(todo.getTodoString());
-//            todoRepository.save(todoOptional.get());
-//        }
-//        return "Дело №" + id + " изменено";
-//    }
-//
-//    @DeleteMapping("/todo/")
-//    public String deleteAll() {
-//        todoRepository.deleteAll();
-//        return "База очищена";
-//    }
-
-
-
-    //=============================================================================
-
 
     @GetMapping("/todo/")
-    public Iterable<Todo> list() {
-
-       // Iterable<Todo> todoIterable = taskService.allTodo();
-        return taskService.allTodo();
+    public List<TodoDTO> list() {
+        List<TodoDTO> collect = taskService.getListOfItems().stream().map(TodoMapper::map).collect(toList());
+        return collect;
     }
 
+
     @PostMapping("/todo/")
-    public long add(Todo todo) {
-       // Todo newTodo = taskService.addTodo(todo);
-        return taskService.addTodo(todo);
+    public long add(@Valid TodoDTO todo) {
+        return taskService.addTodo(TodoMapper.convert(todo));
     }
 
     @GetMapping("/todo/{id}")
-    public Todo get(@PathVariable long id) throws EntityNotFoundException {
-       // Todo todo = todoRepository.findById(id).orElseThrow(() -> EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено"));
-        return taskService.getTodo(id);
+    public TodoDTO get(@PathVariable long id) throws EntityNotFoundException {
+        TodoDTO todoDTO = TodoMapper.map(taskService.getTodo(id));
+        return todoDTO;
     }
 
     @DeleteMapping("/todo/{id}")
     public String delete(@PathVariable long id) throws EntityNotFoundException {
-//        Optional<Todo> optionalTodo = todoRepository.findById(id);
-//        if (!optionalTodo.isPresent()) {
-//            throw EntityNotFoundException.createWith(id, "Дело №" + id + " не найдено");
-//        } else todoRepository.deleteById(id);
         return taskService.deleteTodo(id);
     }
 
     @PutMapping("/todo/{id}")
-    public String update(@PathVariable long id, Todo todo) throws EntityNotFoundException {
-
-        return taskService.updateTodo(id, todo);
+    public String update(@PathVariable long id, TodoDTO todo) throws EntityNotFoundException {
+        Todo todoConvert = TodoMapper.convert(todo);
+        return taskService.updateTodo(id, todoConvert);
     }
 
     @DeleteMapping("/todo/")
     public String deleteAll() {
         return taskService.deleteAllTodo();
     }
-
-
-
-
 }

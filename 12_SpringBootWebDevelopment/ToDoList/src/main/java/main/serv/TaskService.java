@@ -3,8 +3,9 @@ package main.serv;
 import main.EntityNotFoundException;
 import main.models.Todo;
 
+import java.util.List;
+
 public interface TaskService {
-    Iterable<Todo> allTodo();
 
     long addTodo(Todo todo);
 
@@ -15,4 +16,6 @@ public interface TaskService {
     String updateTodo(long todoId, Todo todo) throws EntityNotFoundException;
 
     String deleteAllTodo();
+
+    List<Todo> getListOfItems();
 }

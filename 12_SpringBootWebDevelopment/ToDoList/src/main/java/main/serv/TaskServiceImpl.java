@@ -1,10 +1,13 @@
 package main.serv;
 
 import main.EntityNotFoundException;
+import main.dto.TodoDTO;
 import main.models.Todo;
 import main.repo.TodoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,9 +21,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    public Iterable<Todo> allTodo() {
+    //    public Iterable<Todo> allTodo() {
+//        Iterable<Todo> todoIterable = todoRepository.findAll();
+//        return todoIterable;
+//    }
+    @Override
+    public List<Todo> getListOfItems() {
         Iterable<Todo> todoIterable = todoRepository.findAll();
-        return todoIterable;
+        List<Todo> todos = new ArrayList<>();
+        for (Todo todo : todoIterable) {
+            todos.add(todo);
+        }
+        return todos;
     }
 
     public long addTodo(Todo todo) {
@@ -56,4 +68,6 @@ public class TaskServiceImpl implements TaskService {
         todoRepository.deleteAll();
         return "База очищена";
     }
+
+
 }
