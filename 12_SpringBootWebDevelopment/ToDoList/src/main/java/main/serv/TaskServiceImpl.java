@@ -21,10 +21,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    //    public Iterable<Todo> allTodo() {
-//        Iterable<Todo> todoIterable = todoRepository.findAll();
-//        return todoIterable;
-//    }
+
     @Override
     public List<Todo> getListOfItems() {
         Iterable<Todo> todoIterable = todoRepository.findAll();

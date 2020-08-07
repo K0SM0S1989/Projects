@@ -1,1 +1,1 @@
-delete from todo;
+truncate table todo_lib_test.todo;

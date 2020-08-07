@@ -1,21 +1,26 @@
 package main.controller;
 
+import main.models.Todo;
+import main.serv.TaskService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
-@RestController
+@Controller
 public class DefaultController {
-    DateTimeFormatter dayFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy - EEEE", new Locale("ru"));
-    LocalDate localDate = LocalDate.now();
+
+    final TaskService taskService;
+
+    public DefaultController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @RequestMapping("/")
-    public String webMethod() {
-        String string = "Текущая дата - " + dayFormat.format(localDate);
-        return string;
+    public String webMethod(Model model) {
+        Iterable<Todo> todoIterable = taskService.getListOfItems();
+        model.addAttribute("Todo",todoIterable);
+        return "index";
     }
 
 }
