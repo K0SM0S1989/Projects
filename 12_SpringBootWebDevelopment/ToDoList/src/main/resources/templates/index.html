@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Todo List</title>
-    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container mt-5">
+    <h1>Добавление дела</h1>
+    <form action="/" method="post">
+        <input type="text" name="todo" placeholder="Введите дело" class="form-control">
+        <button type="submit" class="btn btn-success mt-5">Сохранить</button>
+    </form>
+</div>
     <h1>Список дел </h1>
-    <br><br>
+
     <div id="book-list">
         <div th:each="todo : ${Todo}">
             <a href="#" class="todo-link" th:attr="data-id=${todo.id}" th:text="${todo.todoString}"></a>

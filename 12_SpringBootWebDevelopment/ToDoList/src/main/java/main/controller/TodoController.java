@@ -5,6 +5,8 @@ import main.dto.TodoDTO;
 import main.mappers.TodoMapper;
 import main.models.Todo;
 import main.serv.TaskService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,14 +26,14 @@ public class TodoController {
     }
 
 
-    @GetMapping("/todo/")
-    public List<TodoDTO> list() {
+    @GetMapping("/todo")
+    public String list(Model model) {
         List<TodoDTO> collect = taskService.getListOfItems().stream().map(TodoMapper::map).collect(toList());
-        return collect;
+        model.addAttribute("Todo", collect);
+        return "index";
     }
 
-
-    @PostMapping("/todo/")
+    @PostMapping("/todo")
     public long add(@Valid TodoDTO todo) {
         return taskService.addTodo(TodoMapper.convert(todo));
     }
