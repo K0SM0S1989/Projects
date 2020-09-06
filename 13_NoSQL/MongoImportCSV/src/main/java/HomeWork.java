@@ -14,6 +14,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.*;
+
 /**
  * класс для подключения к базе,
  * парсинга файла csv,
@@ -21,45 +24,31 @@ import java.util.stream.Collectors;
  */
 public class HomeWork {
 
-//    private String host;
-//    private Integer port;
-    private String filePath;
-
-    public HomeWork() {
-    }
+    private final String filePath;
+    private MongoCollection<Document> collection;
 
     public HomeWork(String filePath) {
         this.filePath = filePath;
     }
-
-    public void init(){
-
-    }
-
     /**
      * метод для подключения к базе
-     * и выводу на печать ответов по домашнему заданию
      */
 
-    public void go() {
+    void init() {
         MongoClient mongoClient = new MongoClient("127.0.0.1", 27017);
         MongoDatabase database = mongoClient.getDatabase("local");
 
         // Создаем коллекцию
-        MongoCollection<Document> collection = database.getCollection("StudentList");
+        collection = database.getCollection("StudentList");
 
         // Удалим из нее все документы
         collection.drop();
-
-        System.out.println("Общее количество студентов - " + addDataToMongoDB(collection));
-
-        System.out.println("Количество студентов старше 40 лет - " + studentsOld40YearsCount(collection));
-
-        System.out.println("Имя самого молодого студента - " + youngStudentName(collection));
-
-        System.out.println("Список курсов самого старого студента - " + oldStudentCourses(collection));
-
     }
+
+    void removeAll(){
+        collection.drop();
+    }
+
 
     /**
      * метод для парсинга .csv файла
@@ -68,7 +57,7 @@ public class HomeWork {
      *
      * @return
      */
-    public List<Student> parseStudentMongoCsv(String filePath) {
+    List<Student> parseStudentMongoCsv(String filePath) {
         List<Student> students = new ArrayList<>();
         try {
             List<String> list = Files.readAllLines(Paths.get(filePath));
@@ -97,10 +86,9 @@ public class HomeWork {
      * добавление данных из файла csv в базу MongoDB
      * вывод количества добавленных студентов из файла csv
      *
-     * @param collection
+     * @return
      */
-
-    public long addDataToMongoDB(MongoCollection<Document> collection) {
+    long addDataToMongoDB() {
         List<Student> studentList = parseStudentMongoCsv(filePath);
         studentList.forEach(student -> {
             Document document = new Document()
@@ -112,18 +100,16 @@ public class HomeWork {
         return collection.countDocuments();
     }
 
-
-
     /**
      * метод для поиска и подсчета количества студентов старше 40 лет
      *
-     * @param collection
      * @return
      */
-    int studentsOld40YearsCount(MongoCollection<Document> collection) {
+
+    int studentsOld40YearsCount() {
         AtomicInteger i = new AtomicInteger();
         List<Document> docList = new ArrayList<>();
-        collection.find(new Document("Age", new Document("$gt", 40))).forEach((Consumer<Document>) doc -> {
+        collection.find(gt("Age", 40)).forEach((Consumer<Document>) doc -> {
             docList.add(doc);
             i.set(docList.size());
         });
@@ -133,13 +119,12 @@ public class HomeWork {
     /**
      * Метод для поиска самого молодого студента и вывода его имени
      *
-     * @param collection
      * @return
      */
 
-    String youngStudentName(MongoCollection<Document> collection) {
+    String youngStudentName() {
         AtomicReference<String> name = new AtomicReference<>();
-        collection.find().sort(new Document("Age", 1)).limit(1).forEach((Consumer<Document>) doc -> {
+        collection.find().sort(ascending("Age")).limit(1).forEach((Consumer<Document>) doc -> {
             name.set(String.valueOf(doc.get("Name")));
         });
         return name.get();
@@ -148,13 +133,12 @@ public class HomeWork {
     /**
      * Метод для поиска самого старого студента и вывода списка его курсов
      *
-     * @param collection
      * @return
      */
 
-    List<String> oldStudentCourses(MongoCollection<Document> collection) {
+    List<String> oldStudentCourses() {
         List<String> courses = new ArrayList<>();
-        collection.find().sort(new Document("Age", -1))
+        collection.find().sort(descending("Age"))
                 .limit(1).forEach((Consumer<Document>) doc -> courses
                 .addAll((Collection<? extends String>) doc.get("Courses")));
         return courses;

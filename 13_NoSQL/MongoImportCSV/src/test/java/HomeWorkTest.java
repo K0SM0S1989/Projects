@@ -1,7 +1,3 @@
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -18,9 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 class HomeWorkTest {
+    List<Student> expected = new ArrayList<>();
+
     private HomeWork homeWork;
     private final String filePath = "src/test/resources/stud.csv";
-    private MongoCollection<Document> collection;
+
 
     @Container
     public GenericContainer mongoDBContainer = new GenericContainer("mongo:4.0.10")
@@ -29,22 +27,16 @@ class HomeWorkTest {
 
     @BeforeEach
     void setup() {
-        String address = mongoDBContainer.getHost();
-        Integer port = mongoDBContainer.getFirstMappedPort();
-
-        MongoClient mongoClient = new MongoClient(address, port);
-        MongoDatabase database = mongoClient.getDatabase("local");
-        collection = database.getCollection("StudentList");
-        collection.drop();
-
         homeWork = new HomeWork(filePath);
-        homeWork.addDataToMongoDB(collection);
+        homeWork.init();
+        homeWork.addDataToMongoDB();
     }
+
 
     @Test
     void parseStudentMongoCsv() {
         List<Student> studentListActual = homeWork.parseStudentMongoCsv(filePath);
-        List<Student> expected = new ArrayList<>();
+
         List<String> courses1 = new ArrayList<>();
         List<String> courses2 = new ArrayList<>();
         List<String> courses3 = new ArrayList<>();
@@ -62,7 +54,6 @@ class HomeWorkTest {
         expected.add(new Student("Elaine Welsh", 42, courses2));
         expected.add(new Student("Aman Ryder", 43, courses3));
 
-
         assertEquals(expected.get(2).getName(), studentListActual.get(2).getName());
 
 
@@ -70,15 +61,16 @@ class HomeWorkTest {
 
     @Test
     void addDataToMongoDBTest() {
-        long actuaiCount = collection.countDocuments();
+        homeWork.removeAll();
+        long actualCount =  homeWork.addDataToMongoDB();
         long expected = 4;
-        assertEquals(expected, actuaiCount);
+        assertEquals(expected, actualCount);
     }
 
 
     @Test
     void studentsOld40YearsCountTest() {
-        long actual = homeWork.studentsOld40YearsCount(collection);
+        long actual = homeWork.studentsOld40YearsCount();
         long expected = 2;
         assertEquals(expected, actual);
 
@@ -86,14 +78,14 @@ class HomeWorkTest {
 
     @Test
     void youngStudentNameTest() {
-        String actual = homeWork.youngStudentName(collection);
+        String actual = homeWork.youngStudentName();
         String expected = "Joshua Dudley";
         assertEquals(expected, actual);
     }
 
     @Test
     void oldStudentCoursesTest() {
-        List<String> actual = homeWork.oldStudentCourses(collection);
+        List<String> actual = homeWork.oldStudentCourses();
         List<String> courses = new ArrayList<>();
         courses.add("Web");
         courses.add("Python");
@@ -106,6 +98,4 @@ class HomeWorkTest {
         }
         assertTrue(expected);
     }
-
-
 }
