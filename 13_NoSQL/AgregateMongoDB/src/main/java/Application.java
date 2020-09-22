@@ -76,7 +76,7 @@ public class Application {
                 collectionShop.updateOne(collectionShop.find(eq("name", commands[2])).first(),
                         set("products", found.get("products")));
                 Document document = collectionShop.find(eq("name", commands[2])).first();
-                System.out.println("Изменяемый док " + document);
+                System.out.println("Товар " + documentPr.get("name") + " выставлен в магазине " + document.get("name"));
             } else {
                 System.out.println("Нет такого товара или магазина");
             }
@@ -104,6 +104,18 @@ public class Application {
             //System.out.println("Количество товаров дешевле 100 рублей: " + doc.get("countLess100"));
             //System.out.println(doc);
             System.out.println(" ");
+        });
+
+        collectionShop.aggregate(
+                Arrays.asList(
+                        lookup("Product", "products", "name", "prod_name"),
+                        unwind("$prod_name"),
+                        match(lt("prod_name.price", 100)),
+                        group("$name", sum("countLess100", 1)
+                        )
+                )
+        ).forEach((Consumer<Document>) doc -> {
+                System.out.println("Количество товаров дешевле 100 рублей: " + doc.get("countLess100"));
         });
 
     }
