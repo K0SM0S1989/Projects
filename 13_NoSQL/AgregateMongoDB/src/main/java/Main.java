@@ -7,14 +7,13 @@ public class Main {
     private static final String addProduct = "ДОБАВИТЬ_ТОВАР";
     private static final String displayProduct = "ВЫСТАВИТЬ_ТОВАР";
     private static final String productStatistics = "СТАТИСТИКА_ТОВАРОВ";
-    private static final String exit = "ВЫХОД";
-    private static boolean isExit = true;
+
+
 
     private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        Application application = new Application();
-        application.init();
+        CommandExecutor commandExecutor = new CommandExecutor();
         System.out.println("Здравствуйте! Это программа для управления товарами в магазине");
         System.out.println("Чтобы добавить магазин введите команду " + addShop + " и название магазина.\n" +
                 "Например: " + addShop + " Девяточка");
@@ -23,34 +22,11 @@ public class Main {
         System.out.println("Чтобы выставить товар в магазине введите команду " + displayProduct + " затем название товара и магазина.\n" +
                 "Например: " + displayProduct + " Вафли Девяточка");
         System.out.println("Чтобы получить информацию о товарах во всех магазинах введите команду " + productStatistics);
-        System.out.println("Для выхода введите команду " + exit);
 
-        while (isExit) {
+
+        while (true) {
             String command = scanner.nextLine().trim();
-            String[] commands = command.split(" ");
-            switch (commands[0]) {
-                case addShop:
-                    application.addShop(command);
-                    break;
-                case addProduct:
-                    application.addProduct(command);
-                    break;
-                case displayProduct:
-                    application.displayProduct(command);
-                    break;
-                case productStatistics:
-                    application.productStatistics();
-                    break;
-                case exit:
-                    isExit = false;
-                    break;
-                default:
-                    System.out.println("Неправильная команда, попробуйте снова");
-                    break;
-
-            }
+            commandExecutor.execute(command);
         }
-
     }
-
 }
