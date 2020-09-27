@@ -21,8 +21,9 @@ public class Application {
     private MongoCollection<Document> collectionProduct;
 
 
-    public void init() {
-        MongoClient mongoClient = new MongoClient("127.0.0.1", 27017);
+
+    public void init(String host, int port) {
+        MongoClient mongoClient = new MongoClient(host, port);
         MongoDatabase database = mongoClient.getDatabase("local");
 
 
@@ -114,7 +115,7 @@ public class Application {
                             .append("Количество товаров дешевле 100 рублей: " + doc.get("countLess100") + "\n");
                 });
             } else {
-                builder.append("Товаров в магазине " + document.get("name") + " не выставлено" + "\n");
+                builder.append("В магазине " + document.get("name") + " товаров не выставлено" + "\n");
             }
         });
         return builder;

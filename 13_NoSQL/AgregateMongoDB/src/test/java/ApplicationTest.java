@@ -17,8 +17,10 @@ public class ApplicationTest {
 
     @BeforeEach
     void setup() {
+        String host = mongoDBContainer.getHost();
+        int port = mongoDBContainer.getMappedPort(27017);
         application = new Application();
-        application.init();
+        application.init(host, port);
 
         application.addShop("ДОБАВИТЬ_МАГАЗИН смарт");
         application.addProduct("ДОБАВИТЬ_ТОВАР виски 1500");
@@ -84,7 +86,7 @@ public class ApplicationTest {
     @Test
     void productStatisticsNullProdInShopTest() {
         StringBuilder actual = application.productStatistics();
-        String expected = "Товаров в магазине смарт не выставлено\n";
+        String expected = "В магазине смарт товаров не выставлено\n";
 
         assertEquals(expected, actual.toString());
     }
