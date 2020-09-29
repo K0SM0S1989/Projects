@@ -3,14 +3,10 @@ import java.io.PrintWriter;
 import java.util.concurrent.RecursiveAction;
 
 public class CarNumbers extends RecursiveAction {
-
     int regionCode;
     final char[] letters = {'У', 'К', 'Е', 'Н', 'Х', 'В', 'А', 'Р', 'О', 'С', 'М', 'Т'};
-
     public CarNumbers(int regionCode) {
-
         this.regionCode = regionCode;
-
     }
 
     @Override
@@ -39,7 +35,6 @@ public class CarNumbers extends RecursiveAction {
                         }
                     }
                 }
-
             }
             writer.write(builder.toString());
             i++;
@@ -48,7 +43,6 @@ public class CarNumbers extends RecursiveAction {
         }
         return i;
     }
-
 
     StringBuffer padNumber(int number, int numberLength, StringBuffer numberBuilder) {
         numberBuilder.delete(0, numberBuilder.length());

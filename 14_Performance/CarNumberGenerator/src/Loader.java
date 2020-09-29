@@ -1,15 +1,9 @@
 import java.util.concurrent.ForkJoinPool;
 
-
 public class Loader {
 
-
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args){
         long start = System.currentTimeMillis();
-
-        //FileOutputStream writer = new FileOutputStream("res/numbers.txt");
-        //PrintWriter writer = new PrintWriter("res/numbers.txt");
-
 
         ForkJoinPool pool = new ForkJoinPool();
         pool.invoke(new CarNumbers(1));
@@ -17,6 +11,5 @@ public class Loader {
 
         System.out.println((System.currentTimeMillis() - start) + " ms");
     }
-
 
 }
