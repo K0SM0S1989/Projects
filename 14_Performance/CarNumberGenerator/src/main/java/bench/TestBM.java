@@ -9,10 +9,12 @@ import org.openjdk.jmh.annotations.*;
 @Fork(2)
 @Measurement(iterations = 4)
 public class TestBM {
+
     @Benchmark
     public void singleThreadingGenerator() {
         Loader.singleThreadingGenerator();
     }
+
     @Benchmark
     public void multiThreadingGeneratorBench() {
         Loader.multiThreadingGenerator();

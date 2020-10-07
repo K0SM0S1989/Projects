@@ -9,12 +9,12 @@ public class Loader {
 
 
     public static void main(String[] args){
-        // long start = System.currentTimeMillis();
+
 
         multiThreadingGenerator();
         singleThreadingGenerator();
 
-        // System.out.println((System.currentTimeMillis() - start) + " ms");
+
     }
 
     public static void multiThreadingGenerator() {
