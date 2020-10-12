@@ -1,36 +1,39 @@
 package generator;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.concurrent.ForkJoinPool;
+
 
 public class Loader {
     private static final int allRegionCodes = 100;
 
 
-    public static void main(String[] args){
-     long start = System.currentTimeMillis();
+    public static void main(String[] args) {
+        long start = System.currentTimeMillis();
 
         multiThreadingGenerator();
-        //singleThreadingGenerator();
+        singleThreadingGenerator();
 
-        System.out.println(System.currentTimeMillis()-start);
+
+        System.out.println(System.currentTimeMillis() - start + " ms");
 
     }
 
     public static void multiThreadingGenerator() {
         ForkJoinPool pool = new ForkJoinPool();
         pool.invoke(new CarNumbers(1, allRegionCodes));
-        pool.shutdown();
+        pool.shutdownNow();
     }
 
-    public static void singleThreadingGenerator(){
+
+    public static void singleThreadingGenerator() {
         char[] letters = {'У', 'К', 'Е', 'Н', 'Х', 'В', 'А', 'Р', 'О', 'С', 'М', 'Т'};
-
-
-        try (PrintWriter writer = new PrintWriter("res/numbers.txt")) {
-
-            for (int i = 1; i < allRegionCodes; i++) {
+        try (FileChannel channel = new FileOutputStream("res/numbers.txt").getChannel()) {
+            for (int i = 1; i <= allRegionCodes; i++) {
                 StringBuilder numberBuilder = new StringBuilder();
                 StringBuilder builder = new StringBuilder();
                 for (int number = 1; number < 1000; number++) {
@@ -47,10 +50,17 @@ public class Loader {
                         }
                     }
                 }
-                writer.write(builder.toString());
-            }
+                ByteBuffer byteBuffer = ByteBuffer.wrap(builder.toString().getBytes());
+                while (byteBuffer.hasRemaining()) {
+                    int bytes = channel.write(byteBuffer);
+                    if (bytes <= 0)
+                        break;
+                }
 
-        } catch (FileNotFoundException e) {
+            }
+            channel.force(true);
+
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -64,5 +74,4 @@ public class Loader {
         }
         return numberBuilder;
     }
-
 }
