@@ -1,43 +1,36 @@
 import java.util.Date;
 import java.util.TreeSet;
 
-public class WorkTime
-{
-    private TreeSet<TimePeriod> periods;
+public class WorkTime {
+    private final TreeSet<TimePeriod> periods;
 
     /**
      * Set of TimePeriod objects
      */
-    public WorkTime()
-    {
+    public WorkTime() {
         periods = new TreeSet<>();
     }
 
-    public void addVisitTime(long visitTime)
-    {
+    public void addVisitTime(long visitTime) {
         Date visit = new Date(visitTime);
         TimePeriod newPeriod = new TimePeriod(visit, visit);
-        for(TimePeriod period : periods)
-        {
-            if(period.compareTo(newPeriod) == 0)
-            {
+        for (TimePeriod period : periods) {
+            if (period.compareTo(newPeriod) == 0) {
                 period.appendTime(visit);
                 return;
             }
         }
-        periods.add(new TimePeriod(visit, visit));
+        periods.add(newPeriod);
     }
 
-    public String toString()
-    {
-        String line = "";
-        for(TimePeriod period : periods)
-        {
-            if(!line.isEmpty()) {
-                line += ", ";
+    public String toString() {
+        StringBuilder line = new StringBuilder();
+        for (TimePeriod period : periods) {
+            if (line.length() > 0) {
+                line.append(", ");
             }
-            line += period;
+            line.append(period);
         }
-        return line;
+        return line.toString();
     }
 }
