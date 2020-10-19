@@ -12,11 +12,11 @@ public class WorkTime {
     }
 
     public void addVisitTime(long visitTime) {
-        Date visit = new Date(visitTime);
-        TimePeriod newPeriod = new TimePeriod(visit, visit);
+       // Date visit = new Date(visitTime);
+        TimePeriod newPeriod = new TimePeriod(visitTime, visitTime);
         for (TimePeriod period : periods) {
             if (period.compareTo(newPeriod) == 0) {
-                period.appendTime(visit);
+                period.appendTime(visitTime);
                 return;
             }
         }
