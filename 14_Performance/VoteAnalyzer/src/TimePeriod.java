@@ -6,6 +6,8 @@ public class TimePeriod implements Comparable<TimePeriod> {
     private long to;
     private final SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy.MM.dd");
 
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+    private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
     /**
      * Time period within one day
@@ -54,8 +56,6 @@ public class TimePeriod implements Comparable<TimePeriod> {
     }
 
     public String toString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 //        String from = dateFormat.format(this.from);
 //        String to = timeFormat.format(this.to);
         String from = dateFormat.format(new Date(this.from));
@@ -65,6 +65,12 @@ public class TimePeriod implements Comparable<TimePeriod> {
 
     @Override
     public int compareTo(TimePeriod period) {
-        return dayFormat.format(from).compareTo(dayFormat.format(period.from));
+        long delta = 86400000;
+        long current = from;
+        long compared = period.from;
+        if (Math.abs(current - compared) < delta) {
+            return 0;
+        } else return -1;
+//        return dayFormat.format(from).compareTo(dayFormat.format(period.from));
     }
 }
