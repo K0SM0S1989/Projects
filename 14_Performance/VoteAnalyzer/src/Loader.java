@@ -19,41 +19,50 @@ public class Loader {
     private static final HashMap<Integer, WorkTime> voteStationWorkTimes = new HashMap<>();
     private static final HashMap<Voter, Integer> voterCounts = new HashMap<>();
 
+
+
     public static void main(String[] args) throws Exception {
-        String fileName = "res/data-18M.xml";
-        long usageSAX = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        String fileName = "res/data-1572M.xml";
+        long start = System.currentTimeMillis();
 
         SAXParserFactory factory = SAXParserFactory.newNSInstance();
         SAXParser parser = factory.newSAXParser();
-        XMLHandler handler = new XMLHandler(birthDayFormat, visitDateFormat);
+        XMLHandler handler = new XMLHandler();
         parser.parse(new File(fileName), handler);
-        handler.printDublicatedVoters();
-        handler.printWorkTimes();
 
-        usageSAX = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) - usageSAX;
-        System.out.println(usageSAX + " - SAXParser");
+        System.out.println(System.currentTimeMillis() - start + " - Parsing duration of DB");
 
- //=====================================================================================================
+        //====================================================================================================
+//        long usageSAX = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+//
 
-        long usageDOM = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        parseFile(fileName);
+//        handler.printDublicatedVoters();
+//        handler.printWorkTimes();
+//
+//        usageSAX = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) - usageSAX;
+//        System.out.println(usageSAX + " - SAXParser");
 
-        //Printing results
-        System.out.println("Voting station work times: ");
-        for (Integer votingStation : voteStationWorkTimes.keySet()) {
-            WorkTime workTime = voteStationWorkTimes.get(votingStation);
-            System.out.println("\t" + votingStation + " - " + workTime);
-        }
-
-        System.out.println("Duplicated voters: ");
-        for (Voter voter : voterCounts.keySet()) {
-            Integer count = voterCounts.get(voter);
-            if (count > 1) {
-                System.out.println("\t" + voter + " - " + count);
-            }
-        }
-        usageDOM = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) - usageDOM;
-        System.out.println(usageDOM + " - DOMParser");
+        //=====================================================================================================
+//
+//        long usageDOM = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+//        parseFile(fileName);
+//
+//        //Printing results
+//        System.out.println("Voting station work times: ");
+//        for (Integer votingStation : voteStationWorkTimes.keySet()) {
+//            WorkTime workTime = voteStationWorkTimes.get(votingStation);
+//            System.out.println("\t" + votingStation + " - " + workTime);
+//        }
+//
+//        System.out.println("Duplicated voters: ");
+//        for (Voter voter : voterCounts.keySet()) {
+//            Integer count = voterCounts.get(voter);
+//            if (count > 1) {
+//                System.out.println("\t" + voter + " - " + count);
+//            }
+//        }
+//        usageDOM = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) - usageDOM;
+//        System.out.println(usageDOM + " - DOMParser");
     }
 
     private static void parseFile(String fileName) throws Exception {
@@ -62,10 +71,11 @@ public class Loader {
         Document doc = db.parse(new File(fileName));
 
         findEqualVoters(doc);
-        fixWorkTimes(doc);
+//        fixWorkTimes(doc);
     }
 
     private static void findEqualVoters(Document doc) throws Exception {
+        StringBuilder builder = new StringBuilder();
         NodeList voters = doc.getElementsByTagName("voter");
         int votersCount = voters.getLength();
         for (int i = 0; i < votersCount; i++) {
@@ -73,12 +83,21 @@ public class Loader {
             NamedNodeMap attributes = node.getAttributes();
 
             String name = attributes.getNamedItem("name").getNodeValue();
-            Date birthDay = birthDayFormat.parse(attributes.getNamedItem("birthDay").getNodeValue());
-
-            Voter voter = new Voter(name, birthDay);
-            Integer count = voterCounts.get(voter);
-            voterCounts.put(voter, count == null ? 1 : count + 1);
+            //Date birthDay = birthDayFormat.parse(attributes.getNamedItem("birthDay").getNodeValue());
+            String birthDay = attributes.getNamedItem("birthDay").getNodeValue();
+            // DBConnection.countVoter(name, birthDay);
+//            Voter voter = new Voter(name, birthDay);
+//            Integer count = voterCounts.get(voter);
+//            voterCounts.put(voter, count == null ? 1 : count + 1);
+            birthDay = birthDay.replace('.', '-');
+            builder.append((builder.length() == 0 ? "" : ",")
+                    + "('" + name + "', '" + birthDay + "', 1)");
+            if (builder.length() > 1024) {
+                DBConnection.executeMultiInsert(builder);
+                builder = new StringBuilder();
+            }
         }
+        //  DBConnection.executeMultiInsert();
     }
 
     private static void fixWorkTimes(Document doc) throws Exception {

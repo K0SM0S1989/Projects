@@ -9,6 +9,7 @@ public class TimePeriod implements Comparable<TimePeriod> {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm");
     private static final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
 
+
     /**
      * Time period within one day
      *

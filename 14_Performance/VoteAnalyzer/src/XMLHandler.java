@@ -2,73 +2,59 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
+import java.sql.SQLException;
+
 
 public class XMLHandler extends DefaultHandler {
-    private Voter voter;
-    private final HashMap<Voter, Integer> voterCounts;
-    private final HashMap<Integer, WorkTime> voteStationWorkTimes;
-//    private final SimpleDateFormat birthDayFormat = new SimpleDateFormat("yyyy.MM.dd");
-//    private final SimpleDateFormat visitDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
-    private final SimpleDateFormat birthDayFormat;
-    private final SimpleDateFormat visitDateFormat;
 
+    private StringBuilder builder = new StringBuilder();
+    private long count = 0;
 
-    public XMLHandler(SimpleDateFormat birthDayFormat, SimpleDateFormat visitDateFormat) {
-        voterCounts = new HashMap<>();
-        voteStationWorkTimes = new HashMap<>();
-        this.birthDayFormat = birthDayFormat;
-        this.visitDateFormat = visitDateFormat;
-    }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        try {
-            if (qName.equals("voter")) {
-                Date birthday = birthDayFormat.parse(attributes.getValue("birthDay"));
-                voter = new Voter(attributes.getValue("name"), birthday);
-                int count = voterCounts.getOrDefault(voter, 0);
-                voterCounts.put(voter, count + 1);
-            } else if (qName.equals("visit") && voter != null) {
-                Integer station = Integer.parseInt(attributes.getValue("station"));
-                Date time = visitDateFormat.parse(attributes.getValue("time"));
-                WorkTime workTime = voteStationWorkTimes.get(station);
-                if (workTime == null) {
-                    workTime = new WorkTime();
-                    voteStationWorkTimes.put(station, workTime);
+        if (qName.equals("voter")) {
+            String birthDay = attributes.getValue("birthDay");
+            birthDay = birthDay.replace('.', '-');
+            String name = attributes.getValue("name");
+
+            builder.append((builder.length() == 0 ? "" : ",")
+                    + "('" + name + "', '" + birthDay + "', 1)");
+            count++;
+            if (count % 80000 == 0) {
+                try {
+                    DBConnection.executeMultiInsert(builder);
+                    builder = new StringBuilder();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
                 }
-                workTime.addVisitTime(time.getTime());
             }
-
-        } catch (ParseException ex) {
-            ex.printStackTrace();
         }
-
     }
+
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (qName.equals("voter")) {
-            voter = null;
+    public void endDocument() throws SAXException {
+        try {
+            DBConnection.executeMultiInsert(builder);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
-    public void printDublicatedVoters() {
-        for (Voter voter : voterCounts.keySet()) {
-            int count = voterCounts.get(voter);
-            if (count > 1) {
-                System.out.println("\t" + voter.toString() + " - " + count);
-            }
-        }
-    }
-
-    public void printWorkTimes() {
-        for (int votingStation : voteStationWorkTimes.keySet()) {
-            WorkTime workTime = voteStationWorkTimes.get(votingStation);
-            System.out.println("\t" + votingStation + " - " + workTime);
-        }
-    }
+    //    public void printDublicatedVoters() {
+//        for (Voter voter : voterCounts.keySet()) {
+//            int count = voterCounts.get(voter);
+//            if (count > 1) {
+//                System.out.println("\t" + voter.toString() + " - " + count);
+//            }
+//        }
+//    }
+//
+//    public void printWorkTimes() {
+//        for (int votingStation : voteStationWorkTimes.keySet()) {
+//            WorkTime workTime = voteStationWorkTimes.get(votingStation);
+//            System.out.println("\t" + votingStation + " - " + workTime);
+//        }
+//    }
 }
