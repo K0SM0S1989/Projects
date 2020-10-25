@@ -30,7 +30,11 @@ public class Loader {
         XMLHandler handler = new XMLHandler();
         parser.parse(new File(fileName), handler);
 
-        System.out.println(System.currentTimeMillis() - start + " - Parsing duration of DB");
+        System.out.println(System.currentTimeMillis() - start + " - Record to DB");
+
+        long inception = System.currentTimeMillis();
+        DBConnection.printVoterCounts();
+        System.out.println(System.currentTimeMillis() - inception + " - Query from DB");
 
         //====================================================================================================
 //        long usageSAX = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
@@ -85,19 +89,11 @@ public class Loader {
             String name = attributes.getNamedItem("name").getNodeValue();
             //Date birthDay = birthDayFormat.parse(attributes.getNamedItem("birthDay").getNodeValue());
             String birthDay = attributes.getNamedItem("birthDay").getNodeValue();
-            // DBConnection.countVoter(name, birthDay);
-//            Voter voter = new Voter(name, birthDay);
-//            Integer count = voterCounts.get(voter);
-//            voterCounts.put(voter, count == null ? 1 : count + 1);
-            birthDay = birthDay.replace('.', '-');
-            builder.append((builder.length() == 0 ? "" : ",")
-                    + "('" + name + "', '" + birthDay + "', 1)");
-            if (builder.length() > 1024) {
-                DBConnection.executeMultiInsert(builder);
-                builder = new StringBuilder();
-            }
+
+
+
         }
-        //  DBConnection.executeMultiInsert();
+
     }
 
     private static void fixWorkTimes(Document doc) throws Exception {

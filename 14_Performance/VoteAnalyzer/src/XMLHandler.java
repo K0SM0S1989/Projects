@@ -19,7 +19,7 @@ public class XMLHandler extends DefaultHandler {
             String name = attributes.getValue("name");
 
             builder.append((builder.length() == 0 ? "" : ",")
-                    + "('" + name + "', '" + birthDay + "', 1)");
+                    + "('" + name + "', '" + birthDay + "')");
             count++;
             if (count % 80000 == 0) {
                 try {
@@ -42,19 +42,4 @@ public class XMLHandler extends DefaultHandler {
         }
     }
 
-    //    public void printDublicatedVoters() {
-//        for (Voter voter : voterCounts.keySet()) {
-//            int count = voterCounts.get(voter);
-//            if (count > 1) {
-//                System.out.println("\t" + voter.toString() + " - " + count);
-//            }
-//        }
-//    }
-//
-//    public void printWorkTimes() {
-//        for (int votingStation : voteStationWorkTimes.keySet()) {
-//            WorkTime workTime = voteStationWorkTimes.get(votingStation);
-//            System.out.println("\t" + votingStation + " - " + workTime);
-//        }
-//    }
 }
